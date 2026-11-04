@@ -26,13 +26,18 @@ to run on any cloud.
 
 ## Healthcare AI Solution Blueprints deck (Insight Global template)
 
-- **Deck:** [`deck/IG_Healthcare_AI_Solution_Blueprints.pptx`](deck/IG_Healthcare_AI_Solution_Blueprints.pptx) (23 slides, speaker notes with talk track and discovery questions)
+- **Deck:** [`deck/IG_Healthcare_AI_Solution_Blueprints.pptx`](deck/IG_Healthcare_AI_Solution_Blueprints.pptx) (32 slides, speaker notes with talk track and discovery questions)
 - **Preview:** [`deck/IG_Healthcare_AI_Solution_Blueprints_preview.pdf`](deck/IG_Healthcare_AI_Solution_Blueprints_preview.pdf) (rendered with a substitute font; the .pptx uses Trenda IG Text)
+- Theme: template gradient backgrounds for title, agenda, blueprint section slides and thank-you; black for content slides;
+  white for architecture slides; the template's own ●●●IG footer mark
 - Structure: one **universal architecture** (Data foundation → Data readiness → Intelligence core → Agentic workflows, plus trust layer,
-  runs on Google Cloud / AWS / Azure / Salesforce), then five **Solution Blueprints**, each in 3 slides
-  (problem & solution with an evidence callout → the blueprint on the universal architecture → value):
+  runs on Google Cloud / AWS / Azure / Salesforce), then six **Solution Blueprints**, each with a section slide and 3 content slides
+  (problem & solution → the blueprint on the universal architecture → value):
   **CareGraph** (Care Engagement), **TherapyGraph** (Life Sciences), **RxGraph** (Pharmacy & Drug),
-  **DeviceGraph** (Medical Devices & IoT), **ChainGraph** (Manufacturing & Supply Chain)
+  **DeviceGraph** (Medical Devices & IoT), **ChainGraph** (Manufacturing & Supply Chain),
+  **ShieldGraph** (Security, Access & Compliance, powered by ShieldForge)
+- Each problem & solution slide ends with **evidence from the field** (a published Salesforce customer result, or our own
+  ShieldForge for ShieldGraph) and a **What we bring** line on how the blueprint brings that result to the client
 - Value figures are either sourced public evidence or percentage ranges marked "Pilot target"
 - Icons: [Lucide](https://lucide.dev) (ISC license). Vendor logos: [Devicon](https://devicon.dev) (MIT); the logos are trademarks of their owners
 - Edit copy in `deck/content.py`, then rebuild:

@@ -432,25 +432,31 @@ def problem_slide(d, p):
     tb(s, ML, y, lw, 0.25, "PROBLEMS IT SOLVES", size=10, bold=True, color=MAGENTA, tracking=2.2)
     y += 0.34
     cw = (lw - 0.2) / 2
-    pitch = 0.74
+    pitch = 0.64
     for i, (ic, title, desc) in enumerate(p["problems"]):
         c, r = i % 2, i // 2
         x, yy = ML + c * (cw + 0.2), y + r * pitch
-        oval(s, x, yy, 0.42, fill=DARK2)
-        icon(s, ic, hexof(MAGENTA), x + 0.09, yy + 0.09, 0.24)
-        t_h = text_h(title, 11.5, cw - 0.55, 1.1)
-        tb(s, x + 0.52, yy - 0.01, cw - 0.55, t_h, title, size=11.5, bold=True, line=1.0, color=WHITE)
-        tb(s, x + 0.52, yy + t_h + 0.01, cw - 0.55, 0.4, desc, size=10, color=SOFT, line=1.0)
-    # evidence callout: published research or another organization's reported result
+        oval(s, x, yy, 0.4, fill=DARK2)
+        icon(s, ic, hexof(MAGENTA), x + 0.08, yy + 0.08, 0.24)
+        t_h = text_h(title, 11, cw - 0.55, 1.1)
+        tb(s, x + 0.5, yy - 0.01, cw - 0.55, t_h, title, size=11, bold=True, line=1.0, color=WHITE)
+        tb(s, x + 0.5, yy + t_h + 0.01, cw - 0.55, 0.36, desc, size=9.5, color=SOFT, line=1.0)
+    # evidence callout + what we bring to the client's table
     big, txt, src = p["evidence"]
-    fy = y + 3 * pitch + 0.08
+    fy = y + 3 * pitch + 0.04
     hline(s, ML, fy, ML + lw, WHITE, 0.75, dash=True)
-    tb(s, ML, fy + 0.08, 2, 0.22, "EVIDENCE FROM THE FIELD", size=8, bold=True, color=SOFT, tracking=1.5)
-    bw = max(0.6, len(big) * 26 * 0.55 / 72 + 0.25)
-    tb(s, ML, fy + 0.3, bw, 0.5, big, size=26, light=True, color=MAGENTA)
-    th_ = text_h(txt, 11, lw - bw - 0.1) * 1.12
-    tb(s, ML + bw + 0.1, fy + 0.32, lw - bw - 0.1, th_, txt, size=11, color=WHITE)
-    tb(s, ML + bw + 0.1, fy + 0.34 + th_, lw - bw - 0.1, 0.22, "Source: " + src, size=9, italic=True, color=SOFT)
+    tag = "WITH SALESFORCE" if p.get("evidence_tag") == "with" else "OUR SHIELDFORGE"
+    rich(s, ML, fy + 0.07, lw, 0.22, [("EVIDENCE FROM THE FIELD  ·  ", SOFT, True), (tag, hexof(CYAN), True)], size=8)
+    bw = max(0.6, len(big) * 24 * 0.55 / 72 + 0.25)
+    tb(s, ML, fy + 0.28, bw, 0.45, big, size=24, light=True, color=MAGENTA)
+    th_ = text_h(txt, 10.5, lw - bw - 0.1) * 1.12
+    tb(s, ML + bw + 0.1, fy + 0.3, lw - bw - 0.1, th_, txt, size=10.5, color=WHITE)
+    sy = fy + 0.31 + th_
+    tb(s, ML + bw + 0.1, sy, lw - bw - 0.1, 0.2, "Source: " + src, size=8.5, italic=True, color=SOFT)
+    by_ = sy + 0.26
+    bh = text_h("WHAT WE BRING  " + p["bring"], 10.5, lw - 0.1) * 1.12
+    rect(s, ML, by_ - 0.04, 0.05, bh + 0.06, fill=CYAN)
+    rich(s, ML + 0.15, by_, lw - 0.15, bh, [("WHAT WE BRING  ", hexof(CYAN), True), (p["bring"], WHITE, False)], size=10.5)
 
     rx, rw = W / 2 + 0.55, W / 2 - 1.15
     tb(s, rx, 0.7, rw, 0.3, "OUR SOLUTION", size=10, bold=True, color=CYAN, tracking=2.2)
@@ -476,7 +482,8 @@ def problem_slide(d, p):
         if x + wpill > rx + rw:
             x, yy = rx, yy + 0.4
         x = logo_pill(s, x, yy, b, WHITE, size=11) if sf else pill(s, x, yy, b, WHITE, size=11)
-    d.notes(s, "PRESIDENT CUT: present this blueprint.\n\nTalk track: " + p["talk"])
+    d.notes(s, "PRESIDENT CUT: present this blueprint.\n\nTalk track: " + p["talk"] + "\n\nEvidence narrative: "
+            + p["evidence"][0] + " " + p["evidence"][1] + " (" + p["evidence"][2] + "). What we bring: " + p["bring"])
 
 
 def panel(s, x, y, w, h, title, sub, ic, acc):

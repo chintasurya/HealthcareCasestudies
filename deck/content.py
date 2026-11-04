@@ -62,6 +62,8 @@ PLATFORMS = [
     {
         "name": "CareGraph",
         "evidence": ("27%", "better patient adherence reported by Salesforce Health Cloud customers", "Salesforce (vendor-reported)"),
+        "evidence_tag": "with",
+        "bring": "CareGraph delivers this on Health Cloud, adding the graph, agents and trust layer to scale it across your whole system.",
         "domain": "Care Engagement",
         "accent": "cyan",
         "icon": "heart-pulse",
@@ -135,6 +137,8 @@ PLATFORMS = [
     {
         "name": "TherapyGraph",
         "evidence": ("Oct 2025", "Salesforce Life Sciences Cloud went GA; Pfizer and Fidia named early adopters, Novartis selected it globally", "Salesforce"),
+        "evidence_tag": "with",
+        "bring": "TherapyGraph brings the same Life Sciences Cloud foundation, plus HCP, trial and content intelligence on one graph.",
         "domain": "Life Sciences",
         "accent": "magenta",
         "icon": "flask-conical",
@@ -207,7 +211,9 @@ PLATFORMS = [
     # ---------------------------------------------------------------- RxGraph
     {
         "name": "RxGraph",
-        "evidence": ("22.6K", "free-text medication strings normalized to RxNorm by an LLM-assisted pipeline (RxMap)", "Johns Hopkins (peer-reviewed)"),
+        "evidence": ("27%", "faster patient enrollment, and care plans set up 3x faster, after a pharma company launched a Health Cloud patient hub", "Salesforce blog (vendor-reported; company not named)"),
+        "evidence_tag": "with",
+        "bring": "RxGraph brings that hub model to your patients: prior auth, adherence and safety agents on Health Cloud.",
         "domain": "Pharmacy & Drug",
         "accent": "yellow",
         "icon": "pill",
@@ -280,7 +286,9 @@ PLATFORMS = [
     # ---------------------------------------------------------------- DeviceGraph
     {
         "name": "DeviceGraph",
-        "evidence": ("4,459", "colonoscopy device reports from FDA MAUDE classified by a GPT-4 pipeline with minimal human annotation", "Peer-reviewed study, IOS Press SHTI"),
+        "evidence": ("7,000+", "Philips call-center and field-service engineers work from one complete customer view on Salesforce Service Cloud", "Salesforce customer story (Philips)"),
+        "evidence_tag": "with",
+        "bring": "DeviceGraph brings that one-view service model to complaints, recalls and remote monitoring for your devices.",
         "domain": "Medical Devices & IoT",
         "accent": "purple",
         "icon": "cpu",
@@ -353,7 +361,9 @@ PLATFORMS = [
     # ---------------------------------------------------------------- ChainGraph
     {
         "name": "ChainGraph",
-        "evidence": ("55%", "faster electronic batch-record review in a pharma deployment, with QA keeping final approval", "CannyMinds (vendor-reported)"),
+        "evidence": ("90%", "cut in average weekly order time at McKesson after moving pharma ordering to Salesforce B2B portals", "Salesforce (vendor-reported)"),
+        "evidence_tag": "with",
+        "bring": "ChainGraph extends that Salesforce-connected supply chain upstream: suppliers, batches, quality and shortages.",
         "domain": "Manufacturing & Supply Chain",
         "accent": "green",
         "icon": "factory",
@@ -427,6 +437,8 @@ PLATFORMS = [
     {
         "name": "ShieldGraph",
         "evidence": ("5", "compliance frameworks already mapped in ShieldForge (HIPAA, SOX ITGC, NIST 800-53, PCI-DSS, GDPR)", "ShieldForge (Insight Global, in-house)"),
+        "evidence_tag": "ours",
+        "bring": "ShieldGraph takes what ShieldForge already does inside Salesforce to Workday, ERP, ServiceNow and the cloud.",
         "domain": "Security, Access & Compliance",
         "accent": "orange",
         "icon": "shield-check",
