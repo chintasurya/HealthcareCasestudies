@@ -28,8 +28,9 @@ to run on any cloud.
 
 - **Deck:** [`deck/IG_Healthcare_AI_Solution_Blueprints.pptx`](deck/IG_Healthcare_AI_Solution_Blueprints.pptx) (32 slides, speaker notes with talk track and discovery questions)
 - **Preview:** [`deck/IG_Healthcare_AI_Solution_Blueprints_preview.pdf`](deck/IG_Healthcare_AI_Solution_Blueprints_preview.pdf) (rendered with a substitute font; the .pptx uses Trenda IG Text)
-- Theme: template gradient backgrounds for title, agenda, blueprint section slides and thank-you; black for content slides;
-  white for architecture slides; the template's own ●●●IG footer mark
+- Theme: built on an **IG slide master with 8 named layouts** (IG Title, IG Agenda – Gradient, IG Section – Navy / Magenta / Gold,
+  IG Content – Black, IG Content – White, IG Thank You). Backgrounds, the template's ●●●IG footer mark and the slide number live on
+  the layouts, so they stay fixed on every slide, and PowerPoint's New Slide offers the IG layouts (`deck/ig_template.py`)
 - Structure: one **universal architecture** (Data foundation → Data readiness → Intelligence core → Agentic workflows, plus trust layer,
   runs on Google Cloud / AWS / Azure / Salesforce), then six **Solution Blueprints**, each with a section slide and 3 content slides
   (problem & solution → the blueprint on the universal architecture → value):

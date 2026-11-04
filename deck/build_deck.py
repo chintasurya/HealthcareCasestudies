@@ -18,12 +18,13 @@ from pathlib import Path
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
-from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 from lxml import etree
 
 import content as C
+import ig_template as T
 
 HERE = Path(__file__).resolve().parent
 ASSETS = HERE / "assets"
@@ -103,8 +104,14 @@ def _rgb(c):
     return RGBColor.from_string(c) if isinstance(c, str) else c
 
 
-def _box(slide, x, y, w, h, anchor):
-    box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+def _box(slide, x, y, w, h, anchor, title=False):
+    if title and slide.shapes.title is not None:
+        box = slide.shapes.title
+        box.left, box.top, box.width, box.height = Inches(x), Inches(y), Inches(w), Inches(h)
+        box.text_frame.clear()
+        box.text_frame.auto_size = MSO_AUTO_SIZE.NONE
+    else:
+        box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     tf = box.text_frame
     tf.word_wrap = True
     tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
@@ -113,8 +120,8 @@ def _box(slide, x, y, w, h, anchor):
 
 
 def tb(slide, x, y, w, h, text, size=14, color=BLACK, bold=False, light=False, italic=False,
-       align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP, tracking=None, line=1.08):
-    box, tf = _box(slide, x, y, w, h, anchor)
+       align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP, tracking=None, line=1.08, title=False):
+    box, tf = _box(slide, x, y, w, h, anchor, title)
     lines = text if isinstance(text, list) else [text]
     for i, t in enumerate(lines):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
@@ -253,28 +260,25 @@ def logo_pill(slide, x, y, text, color, size=11, h=0.32, key="salesforce"):
 
 class Deck:
     def __init__(self):
-        self.prs = Presentation()
-        self.prs.slide_width = Inches(W)
-        self.prs.slide_height = Inches(H)
+        # IG slide master + layouts: backgrounds, footer mark and slide number live on the layouts
+        self.prs = T.build_presentation()
         self.n = 0
 
-    def slide(self, bg=None, fill=None):
-        s = self.prs.slides.add_slide(self.prs.slide_layouts[6])
+    def slide(self, layout):
+        s = self.prs.slides.add_slide(T.layout(self.prs, layout))
         self.n += 1
-        if bg:
-            s.shapes.add_picture(str(ASSETS / bg), 0, 0, Inches(W), Inches(H))
-        elif fill is not None:
-            rect(s, 0, 0, W, H, fill=fill)
         return s
 
     def chrome(self, s, label=C.DECK_LABEL, dark=True, num_dark=None):
-        col = WHITE if dark else BLACK
-        tb(s, ML, 0.3, 12, 0.25, label, size=8, bold=True, color=col, tracking=2.2)
-        # the template's real ●●●IG footer mark (extracted from the template PDF)
-        mark = ASSETS / ("ig_mark_white.png" if dark else "ig_mark_black.png")
-        s.shapes.add_picture(str(mark), Inches(0.553), Inches(7.05), Inches(0.537), Inches(0.108))
-        nd = dark if num_dark is None else num_dark
-        tb(s, W - 1.1, 7.07, 0.5, 0.22, str(self.n), size=9, color=WHITE if nd else BLACK, align=PP_ALIGN.RIGHT)
+        """Small caps deck label (footer mark and slide number come from the IG layout)."""
+        tb(s, ML, 0.3, 12, 0.25, label, size=8, bold=True, color=WHITE if dark else BLACK, tracking=2.2)
+
+    def finish(self):
+        """Drop title placeholders a slide left empty, so no 'Click to add title' boxes remain."""
+        for s in self.prs.slides:
+            t = s.shapes.title
+            if t is not None and not t.text_frame.text.strip():
+                t._element.getparent().remove(t._element)
 
     @staticmethod
     def notes(s, text):
@@ -291,8 +295,8 @@ def plabel(p):
 
 # ----------------------------------------------------------------------------- front slides
 def title_slide(d):
-    s = d.slide(bg="bg_title.png")
-    tb(s, 1, 2.55, W - 2, 1.6, ["HEALTHCARE AI", "SOLUTION BLUEPRINTS"], size=42, light=True, color=WHITE,
+    s = d.slide("IG Title")
+    tb(s, 1, 2.55, W - 2, 1.6, ["HEALTHCARE AI", "SOLUTION BLUEPRINTS"], size=42, light=True, color=WHITE, title=True,
        align=PP_ALIGN.CENTER, tracking=6, line=1.0)
     tb(s, 1, 4.35, W - 2, 0.5, "Six knowledge-graph blueprints across healthcare and enterprise governance", size=18, color=WHITE,
        align=PP_ALIGN.CENTER)
@@ -305,9 +309,9 @@ def title_slide(d):
 
 
 def agenda_slide(d):
-    s = d.slide(bg="bg_dark_magenta.jpg")
+    s = d.slide("IG Agenda – Gradient")
     d.chrome(s)
-    tb(s, ML, 0.75, 6, 0.8, "Agenda", size=40, bold=True, color=WHITE)
+    tb(s, ML, 0.75, 6, 0.8, "Agenda", size=40, bold=True, color=WHITE, title=True)
     items = [("Who we are", None), ("Universal architecture", None)] + \
             [(p["name"], p["domain"]) for p in C.PLATFORMS] + [("How we engage", None)]
     for i, (it, sub) in enumerate(items):
@@ -326,9 +330,9 @@ def agenda_slide(d):
 
 
 def who_slide(d):
-    s = d.slide(fill=BLACK)
+    s = d.slide("IG Content – Black")
     d.chrome(s)
-    tb(s, ML, 0.7, 12, 0.7, "A core team built for any healthcare requirement", size=32, bold=True, color=WHITE)
+    tb(s, ML, 0.7, 12, 0.7, "A core team built for any healthcare requirement", size=32, bold=True, color=WHITE, title=True)
     tb(s, ML, 1.45, 12, 0.4, "From strategy to production across AI, data, Salesforce and cloud, with healthcare compliance built in.",
        size=16, color=SOFT)
     cols = [CYAN, YELLOW, MAGENTA, PURPLE, GREEN, ORANGE]
@@ -361,9 +365,9 @@ def who_slide(d):
 
 
 def five_graphs_slide(d):
-    s = d.slide(fill=BLACK)
+    s = d.slide("IG Content – Black")
     d.chrome(s)
-    tb(s, ML, 0.7, 12, 0.7, "Six blueprints, one architecture", size=32, bold=True, color=WHITE)
+    tb(s, ML, 0.7, 12, 0.7, "Six blueprints, one architecture", size=32, bold=True, color=WHITE, title=True)
     tb(s, ML, 1.42, 12, 0.4, "Each blueprint is built around one central entity and solves the whole set of problems in its domain.",
        size=15, color=SOFT)
     gap = 0.12
@@ -392,19 +396,19 @@ def five_graphs_slide(d):
 
 
 # ----------------------------------------------------------------------------- blueprint slides
-SECTION_BGS = ["bg_section_navy.png", "bg_section_magenta.png", "bg_section_gold.png"]
+SECTION_LAYOUTS = ["IG Section – Navy", "IG Section – Magenta", "IG Section – Gold"]
 
 
 def section_slide(d, p):
     """Template gradient section slide that opens each blueprint."""
     i = C.PLATFORMS.index(p)
-    s = d.slide(bg=SECTION_BGS[i % 3])
+    s = d.slide(SECTION_LAYOUTS[i % 3])
     d.chrome(s)
     acc = ACCENTS[p["accent"]]
     tb(s, ML + 0.4, 2.0, 6, 0.4, f"BLUEPRINT {bnum(p)}", size=14, bold=True, color=WHITE, tracking=4)
     oval(s, ML + 0.4, 2.6, 0.95, fill=acc)
     icon(s, p["icon"], ink_on(acc), ML + 0.62, 2.82, 0.5)
-    tb(s, ML + 1.6, 2.48, 10, 1.0, p["name"], size=54, bold=True, color=WHITE)
+    tb(s, ML + 1.6, 2.48, 10, 1.0, p["name"], size=54, bold=True, color=WHITE, title=True)
     tb(s, ML + 0.4, 3.85, 11, 0.5, p["domain"].upper(), size=18, light=True, color=WHITE, tracking=4)
     tb(s, ML + 0.4, 4.5, 11, 0.5, p["promise"], size=22, light=True, color=WHITE)
     tb(s, ML + 0.4, 5.55, 11.5, 0.6, "Who it's for: " + p["who"], size=13, color=SOFT)
@@ -413,14 +417,14 @@ def section_slide(d, p):
 
 
 def problem_slide(d, p):
-    s = d.slide(fill=BLACK)
+    s = d.slide("IG Content – Black")
     d.chrome(s, label=plabel(p))
     vline(s, W / 2, 0.75, 6.75, DARK2, 1.0)
     acc = ACCENTS[p["accent"]]
     lw = W / 2 - ML - 0.45
     tb(s, ML, 0.7, lw, 0.25, "THE PROBLEM", size=10, bold=True, color=MAGENTA, tracking=2.2)
     th = text_h(p["headline"], 21, lw, 1.1)
-    tb(s, ML, 0.98, lw, th, p["headline"], size=21, bold=True, line=1.0, color=WHITE)
+    tb(s, ML, 0.98, lw, th, p["headline"], size=21, bold=True, line=1.0, color=WHITE, title=True)
     y = 0.98 + th + 0.15
     h = text_h(p["problem"], 12.5, lw)
     tb(s, ML, y, lw, h, p["problem"], size=12.5, color=WHITE)
@@ -632,12 +636,12 @@ def arch_header(s, title, promise, tile_fill, tile_icon, promise_color):
     rect(s, ML, 0.6, 0.62, 0.62, fill=tile_fill, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.2)
     icon(s, tile_icon, ink_on(tile_fill), ML + 0.13, 0.73, 0.36)
     name_w = len(title) * 28 * 0.6 / 72 + 0.25
-    tb(s, ML + 0.8, 0.55, name_w, 0.5, title, size=28, bold=True)
+    tb(s, ML + 0.8, 0.55, name_w, 0.5, title, size=28, bold=True, title=True)
     tb(s, ML + 0.8 + name_w, 0.66, 12.0 - name_w, 0.4, promise, size=18, light=True, color=promise_color)
 
 
 def universal_arch_slide(d):
-    s = d.slide(fill=WHITE)
+    s = d.slide("IG Content – White")
     d.chrome(s, label=C.DECK_LABEL + " · UNIVERSAL ARCHITECTURE", dark=False)
     U = C.UNIVERSAL
     arch_header(s, "Universal architecture", U["promise"], BLACK, "network", on_white(MAGENTA))
@@ -654,7 +658,7 @@ def universal_arch_slide(d):
 
 
 def arch_slide(d, p):
-    s = d.slide(fill=WHITE)
+    s = d.slide("IG Content – White")
     d.chrome(s, label=plabel(p) + " · ON THE UNIVERSAL ARCHITECTURE", dark=False)
     acc = ACCENTS[p["accent"]]
     arch_header(s, p["name"], p["promise"], acc, p["icon"], on_white(acc))
@@ -679,10 +683,10 @@ def arch_slide(d, p):
 
 
 def value_slide(d, p):
-    s = d.slide(fill=BLACK)
+    s = d.slide("IG Content – Black")
     d.chrome(s, label=plabel(p) + " · VALUE")
     tb(s, ML, 0.62, 8, 0.25, "VALUE & BENEFITS", size=10, bold=True, color=CYAN, tracking=2.2)
-    tb(s, ML, 0.92, W - 2 * ML, 1.0, p["value_headline"], size=28, light=True, color=WHITE, line=1.05)
+    tb(s, ML, 0.92, W - 2 * ML, 1.0, p["value_headline"], size=28, light=True, color=WHITE, line=1.05, title=True)
     cw, gap = 2.88, 0.2
     for i, (big, label, src) in enumerate(p["value_stats"]):
         x = ML + i * (cw + gap)
@@ -706,9 +710,9 @@ def value_slide(d, p):
 
 # ----------------------------------------------------------------------------- close
 def engage_slide(d):
-    s = d.slide(fill=BLACK)
+    s = d.slide("IG Content – Black")
     d.chrome(s)
-    tb(s, ML, 0.7, 12, 0.7, "How we engage: from idea to production", size=32, bold=True, color=WHITE)
+    tb(s, ML, 0.7, 12, 0.7, "How we engage: from idea to production", size=32, bold=True, color=WHITE, title=True)
     ly = 4.0
     hline(s, ML, ly, W - ML, WHITE, 3)
     oval(s, ML - 0.09, ly - 0.09, 0.18, fill=WHITE)
@@ -732,9 +736,9 @@ def engage_slide(d):
 
 
 def cheatsheet_slide(d):
-    s = d.slide(fill=BLACK)
+    s = d.slide("IG Content – Black")
     d.chrome(s)
-    tb(s, ML, 0.7, 12, 0.7, "Sales cheat sheet: which blueprint to bring", size=32, bold=True, color=WHITE)
+    tb(s, ML, 0.7, 12, 0.7, "Sales cheat sheet: which blueprint to bring", size=32, bold=True, color=WHITE, title=True)
     widths = [3.0, 5.4, 3.73]
     heads = ["Bring", "Listen for…", "Who to talk to"]
     y = 1.65
@@ -764,7 +768,7 @@ def cheatsheet_slide(d):
 
 
 def thankyou_slide(d):
-    s = d.slide(bg="bg_thankyou.png")
+    s = d.slide("IG Thank You")
     d.notes(s, "Thank you. Next step: agree which client and which blueprint to take into an ideation workshop first.")
 
 
@@ -789,6 +793,7 @@ def build(out=OUT, only=None):
         engage_slide(d)
         cheatsheet_slide(d)
         thankyou_slide(d)
+    d.finish()
     d.prs.save(out)
     return d.n
 
