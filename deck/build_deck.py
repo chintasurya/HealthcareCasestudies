@@ -46,6 +46,8 @@ LIGHT = RGBColor(0xF2, 0xF2, 0xF2)
 MID = RGBColor(0xE2, 0xE2, 0xE2)
 GRAY = RGBColor(0x5F, 0x5F, 0x5F)
 SOFT = RGBColor(0xBF, 0xBF, 0xBF)
+DARK = RGBColor(0x1A, 0x1A, 0x1A)      # cards / tiles on the black theme
+DARK2 = RGBColor(0x2B, 0x2B, 0x2B)     # alternate rows, icon discs on the black theme
 ACCENTS = {"cyan": CYAN, "magenta": MAGENTA, "yellow": YELLOW, "purple": PURPLE, "green": GREEN, "orange": ORANGE}
 # Darker tints for icons / text on white backgrounds (contrast)
 ON_WHITE = {CYAN: "00A3C4", YELLOW: "C99A00", GREEN: "23A41A", MAGENTA: "FF0A6C", PURPLE: "5B2AA0",
@@ -64,6 +66,11 @@ def hexof(c):
 
 def on_white(c):
     return ON_WHITE.get(c, hexof(c))
+
+
+def on_black(c):
+    """Icon / text color for an accent on the black theme (purple is lifted for contrast)."""
+    return "A78BFA" if c == PURPLE else hexof(c)
 
 
 def ink_on(c):
@@ -319,33 +326,33 @@ def agenda_slide(d):
 
 
 def who_slide(d):
-    s = d.slide(fill=WHITE)
-    d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "A core team built for any healthcare requirement", size=32, bold=True)
+    s = d.slide(fill=BLACK)
+    d.chrome(s)
+    tb(s, ML, 0.7, 12, 0.7, "A core team built for any healthcare requirement", size=32, bold=True, color=WHITE)
     tb(s, ML, 1.45, 12, 0.4, "From strategy to production across AI, data, Salesforce and cloud, with healthcare compliance built in.",
-       size=16, color=GRAY)
+       size=16, color=SOFT)
     cols = [CYAN, YELLOW, MAGENTA, PURPLE, GREEN, ORANGE]
     icons = ["bot", "network", "cloud", "server", "shield-check", "workflow"]
     tw, th, gx, gy = 3.93, 1.84, 0.17, 0.12
     for i, (t, desc) in enumerate(C.CAPABILITIES):
         c, r = i % 3, i // 3
         x, y = ML + c * (tw + gx), 2.1 + r * (th + gy)
-        rect(s, x, y, tw, th, fill=LIGHT)
+        rect(s, x, y, tw, th, fill=DARK)
         oval(s, x + 0.25, y + 0.2, 0.5, fill=cols[i])
         icon(s, icons[i], ink_on(cols[i]), x + 0.36, y + 0.31, 0.28)
-        tb(s, x + 0.25, y + 0.72, tw - 0.5, 0.5, t, size=16, bold=True, line=1.0, anchor=MSO_ANCHOR.BOTTOM)
-        tb(s, x + 0.25, y + 1.28, tw - 0.5, 0.55, desc, size=11.5, color=GRAY)
+        tb(s, x + 0.25, y + 0.72, tw - 0.5, 0.5, t, size=16, bold=True, line=1.0, anchor=MSO_ANCHOR.BOTTOM, color=WHITE)
+        tb(s, x + 0.25, y + 1.28, tw - 0.5, 0.55, desc, size=11.5, color=SOFT)
         if i == 2:
             logo(s, "salesforce", x + tw - 0.25 - 0.62, y + 0.2, 0.44)
         if i == 3:
             lx_ = x + tw - 0.25
-            for key, hh in (("azure", 0.38), ("aws", 0.3), ("googlecloud", 0.38)):
+            for key, hh in (("azure", 0.38), ("aws_white", 0.3), ("googlecloud", 0.38)):
                 from PIL import Image
                 wpx, hpx = Image.open(LOGOS / f"{key}.png").size
                 lx_ -= hh * wpx / hpx
                 logo(s, key, lx_, y + 0.22 + (0.38 - hh) / 2, hh)
                 lx_ -= 0.15
-    rect(s, ML, 6.15, W - 2 * ML, 0.68, fill=BLACK)
+    rect(s, ML, 6.15, W - 2 * ML, 0.68, fill=DARK2)
     tb(s, ML + 0.25, 6.15, 1.5, 0.68, "PROOF POINT", size=10, bold=True, color=YELLOW, tracking=2, anchor=MSO_ANCHOR.MIDDLE)
     tb(s, ML + 1.75, 6.15, W - 2 * ML - 2.0, 0.68, C.PROOF_POINT, size=12.5, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
     d.notes(s, "Key message: one core team covers every layer a healthcare AI program needs, so we can take any requirement "
@@ -354,30 +361,30 @@ def who_slide(d):
 
 
 def five_graphs_slide(d):
-    s = d.slide(fill=WHITE)
-    d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "Six blueprints, one architecture", size=32, bold=True)
+    s = d.slide(fill=BLACK)
+    d.chrome(s)
+    tb(s, ML, 0.7, 12, 0.7, "Six blueprints, one architecture", size=32, bold=True, color=WHITE)
     tb(s, ML, 1.42, 12, 0.4, "Each blueprint is built around one central entity and solves the whole set of problems in its domain.",
-       size=15, color=GRAY)
+       size=15, color=SOFT)
     gap = 0.12
     cw = (W - 2 * ML - gap * (len(C.PLATFORMS) - 1)) / len(C.PLATFORMS)
     for i, p in enumerate(C.PLATFORMS):
         x = ML + i * (cw + gap)
         acc = ACCENTS[p["accent"]]
-        rect(s, x, 2.1, cw, 4.65, fill=LIGHT)
+        rect(s, x, 2.1, cw, 4.65, fill=DARK)
         rect(s, x, 2.1, cw, 0.07, fill=acc)
         oval(s, x + 0.18, 2.4, 0.78, fill=acc)
         icon(s, p["icon"], ink_on(acc), x + 0.37, 2.59, 0.4)
-        tb(s, x + 1.06, 2.58, cw - 1.1, 0.5, f"BLUEPRINT\n{bnum(p)}".split("\n"), size=8, bold=True, color=GRAY, tracking=1.0, line=1.0)
-        tb(s, x + 0.18, 3.35, cw - 0.25, 0.4, p["name"], size=18, bold=True)
+        tb(s, x + 1.06, 2.58, cw - 1.1, 0.5, f"BLUEPRINT\n{bnum(p)}".split("\n"), size=8, bold=True, color=SOFT, tracking=1.0, line=1.0)
+        tb(s, x + 0.18, 3.35, cw - 0.2, 0.4, p["name"], size=18 if len(p["name"]) <= 10 else 16, bold=True, color=WHITE)
         dh = text_h(p["domain"].upper(), 8, cw - 0.25, 1.1) + 0.05
-        tb(s, x + 0.18, 3.74, cw - 0.25, dh, p["domain"].upper(), size=8, bold=True, color=GRAY, tracking=1.0, line=1.0)
-        rich(s, x + 0.18, 4.22, cw - 0.25, 0.3, [("Center: ", GRAY, False), (p["center"][0], BLACK, True)], size=10.5)
+        tb(s, x + 0.18, 3.74, cw - 0.25, dh, p["domain"].upper(), size=8, bold=True, color=SOFT, tracking=1.0, line=1.0)
+        rich(s, x + 0.18, 4.22, cw - 0.25, 0.3, [("Center: ", SOFT, False), (p["center"][0], WHITE, True)], size=10.5)
         y = 4.62
         for title, _ in p["modules"]:
-            icon(s, "circle-check", on_white(acc), x + 0.18, y + 0.02, 0.16)
+            icon(s, "circle-check", on_black(acc), x + 0.18, y + 0.02, 0.16)
             h = text_h(title, 10, cw - 0.58)
-            tb(s, x + 0.41, y, cw - 0.5, h, title, size=10)
+            tb(s, x + 0.41, y, cw - 0.5, h, title, size=10, color=WHITE)
             y += h + 0.06
     d.notes(s, "The six blueprints at a glance. Pick the blueprint that matches the client in front of you: provider or payer → CareGraph; "
                "pharma commercial or clinical → TherapyGraph; pharmacy, PBM or patient hub → RxGraph; MedTech or virtual care → DeviceGraph; "
@@ -385,22 +392,42 @@ def five_graphs_slide(d):
 
 
 # ----------------------------------------------------------------------------- blueprint slides
+SECTION_BGS = ["bg_section_navy.png", "bg_section_magenta.png", "bg_section_gold.png"]
+
+
+def section_slide(d, p):
+    """Template gradient section slide that opens each blueprint."""
+    i = C.PLATFORMS.index(p)
+    s = d.slide(bg=SECTION_BGS[i % 3])
+    d.chrome(s)
+    acc = ACCENTS[p["accent"]]
+    tb(s, ML + 0.4, 2.0, 6, 0.4, f"BLUEPRINT {bnum(p)}", size=14, bold=True, color=WHITE, tracking=4)
+    oval(s, ML + 0.4, 2.6, 0.95, fill=acc)
+    icon(s, p["icon"], ink_on(acc), ML + 0.62, 2.82, 0.5)
+    tb(s, ML + 1.6, 2.48, 10, 1.0, p["name"], size=54, bold=True, color=WHITE)
+    tb(s, ML + 0.4, 3.85, 11, 0.5, p["domain"].upper(), size=18, light=True, color=WHITE, tracking=4)
+    tb(s, ML + 0.4, 4.5, 11, 0.5, p["promise"], size=22, light=True, color=WHITE)
+    tb(s, ML + 0.4, 5.55, 11.5, 0.6, "Who it's for: " + p["who"], size=13, color=SOFT)
+    d.notes(s, f"Blueprint {bnum(p)}: {p['name']} for {p['domain']}. {p['promise']}.\nListen for: {p['trigger']}.\n"
+               f"Who to talk to: {p['who_to_talk']}.")
+
+
 def problem_slide(d, p):
-    s = d.slide(fill=WHITE)
-    rect(s, W / 2, 0, W / 2, H, fill=BLACK)
-    d.chrome(s, label=plabel(p), dark=False, num_dark=True)
+    s = d.slide(fill=BLACK)
+    d.chrome(s, label=plabel(p))
+    vline(s, W / 2, 0.75, 6.75, DARK2, 1.0)
     acc = ACCENTS[p["accent"]]
     lw = W / 2 - ML - 0.45
     tb(s, ML, 0.7, lw, 0.25, "THE PROBLEM", size=10, bold=True, color=MAGENTA, tracking=2.2)
     th = text_h(p["headline"], 21, lw, 1.1)
-    tb(s, ML, 0.98, lw, th, p["headline"], size=21, bold=True, line=1.0)
+    tb(s, ML, 0.98, lw, th, p["headline"], size=21, bold=True, line=1.0, color=WHITE)
     y = 0.98 + th + 0.15
     h = text_h(p["problem"], 12.5, lw)
-    tb(s, ML, y, lw, h, p["problem"], size=12.5)
+    tb(s, ML, y, lw, h, p["problem"], size=12.5, color=WHITE)
     y += h + 0.08
     who = "Who feels it: " + p["who"]
     h = text_h(who, 10.5, lw)
-    tb(s, ML, y, lw, h, who, size=10.5, italic=True, color=GRAY)
+    tb(s, ML, y, lw, h, who, size=10.5, italic=True, color=SOFT)
     y += h + 0.22
     tb(s, ML, y, lw, 0.25, "PROBLEMS IT SOLVES", size=10, bold=True, color=MAGENTA, tracking=2.2)
     y += 0.34
@@ -409,21 +436,21 @@ def problem_slide(d, p):
     for i, (ic, title, desc) in enumerate(p["problems"]):
         c, r = i % 2, i // 2
         x, yy = ML + c * (cw + 0.2), y + r * pitch
-        oval(s, x, yy, 0.42, fill=LIGHT)
-        icon(s, ic, on_white(MAGENTA), x + 0.09, yy + 0.09, 0.24)
+        oval(s, x, yy, 0.42, fill=DARK2)
+        icon(s, ic, hexof(MAGENTA), x + 0.09, yy + 0.09, 0.24)
         t_h = text_h(title, 11.5, cw - 0.55, 1.1)
-        tb(s, x + 0.52, yy - 0.01, cw - 0.55, t_h, title, size=11.5, bold=True, line=1.0)
-        tb(s, x + 0.52, yy + t_h + 0.01, cw - 0.55, 0.4, desc, size=10, color=GRAY, line=1.0)
+        tb(s, x + 0.52, yy - 0.01, cw - 0.55, t_h, title, size=11.5, bold=True, line=1.0, color=WHITE)
+        tb(s, x + 0.52, yy + t_h + 0.01, cw - 0.55, 0.4, desc, size=10, color=SOFT, line=1.0)
     # evidence callout: published research or another organization's reported result
     big, txt, src = p["evidence"]
     fy = y + 3 * pitch + 0.08
-    hline(s, ML, fy, ML + lw, BLACK, 0.75, dash=True)
-    tb(s, ML, fy + 0.08, 2, 0.22, "EVIDENCE FROM THE FIELD", size=8, bold=True, color=GRAY, tracking=1.5)
+    hline(s, ML, fy, ML + lw, WHITE, 0.75, dash=True)
+    tb(s, ML, fy + 0.08, 2, 0.22, "EVIDENCE FROM THE FIELD", size=8, bold=True, color=SOFT, tracking=1.5)
     bw = max(0.6, len(big) * 26 * 0.55 / 72 + 0.25)
     tb(s, ML, fy + 0.3, bw, 0.5, big, size=26, light=True, color=MAGENTA)
     th_ = text_h(txt, 11, lw - bw - 0.1) * 1.12
-    tb(s, ML + bw + 0.1, fy + 0.32, lw - bw - 0.1, th_, txt, size=11)
-    tb(s, ML + bw + 0.1, fy + 0.34 + th_, lw - bw - 0.1, 0.22, "Source: " + src, size=9, italic=True, color=GRAY)
+    tb(s, ML + bw + 0.1, fy + 0.32, lw - bw - 0.1, th_, txt, size=11, color=WHITE)
+    tb(s, ML + bw + 0.1, fy + 0.34 + th_, lw - bw - 0.1, 0.22, "Source: " + src, size=9, italic=True, color=SOFT)
 
     rx, rw = W / 2 + 0.55, W / 2 - 1.15
     tb(s, rx, 0.7, rw, 0.3, "OUR SOLUTION", size=10, bold=True, color=CYAN, tracking=2.2)
@@ -672,7 +699,7 @@ def value_slide(d, p):
 
 # ----------------------------------------------------------------------------- close
 def engage_slide(d):
-    s = d.slide(bg="bg_dark_glow.jpg")
+    s = d.slide(fill=BLACK)
     d.chrome(s)
     tb(s, ML, 0.7, 12, 0.7, "How we engage: from idea to production", size=32, bold=True, color=WHITE)
     ly = 4.0
@@ -698,33 +725,33 @@ def engage_slide(d):
 
 
 def cheatsheet_slide(d):
-    s = d.slide(fill=WHITE)
-    d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "Sales cheat sheet: which blueprint to bring", size=32, bold=True)
+    s = d.slide(fill=BLACK)
+    d.chrome(s)
+    tb(s, ML, 0.7, 12, 0.7, "Sales cheat sheet: which blueprint to bring", size=32, bold=True, color=WHITE)
     widths = [3.0, 5.4, 3.73]
     heads = ["Bring", "Listen for…", "Who to talk to"]
     y = 1.65
     x = ML
     for wdt, h in zip(widths, heads):
-        tb(s, x + 0.1, y, wdt - 0.2, 0.4, h, size=14, bold=True)
+        tb(s, x + 0.1, y, wdt - 0.2, 0.4, h, size=14, bold=True, color=WHITE)
         x += wdt
     y += 0.45
-    hline(s, ML, y, W - ML, BLACK, 1.5)
+    hline(s, ML, y, W - ML, WHITE, 1.5)
     rh = 0.76
     for r, p in enumerate(C.PLATFORMS):
         if r % 2 == 0:
-            rect(s, ML, y, W - 2 * ML, rh, fill=LIGHT)
+            rect(s, ML, y, W - 2 * ML, rh, fill=DARK2)
         acc = ACCENTS[p["accent"]]
         oval(s, ML + 0.1, y + rh / 2 - 0.22, 0.44, fill=acc)
         icon(s, p["icon"], ink_on(acc), ML + 0.2, y + rh / 2 - 0.12, 0.24)
-        tb(s, ML + 0.65, y + 0.14, widths[0] - 0.7, 0.3, p["name"], size=14, bold=True)
-        tb(s, ML + 0.65, y + 0.45, widths[0] - 0.7, 0.3, p["domain"], size=10.5, color=GRAY)
+        tb(s, ML + 0.65, y + 0.14, widths[0] - 0.7, 0.3, p["name"], size=14, bold=True, color=WHITE)
+        tb(s, ML + 0.65, y + 0.45, widths[0] - 0.7, 0.3, p["domain"], size=10.5, color=SOFT)
         x = ML + widths[0]
         for wdt, cell in zip(widths[1:], [p["trigger"], p["who_to_talk"]]):
-            tb(s, x + 0.1, y, wdt - 0.2, rh, cell, size=12, anchor=MSO_ANCHOR.MIDDLE)
+            tb(s, x + 0.1, y, wdt - 0.2, rh, cell, size=12, anchor=MSO_ANCHOR.MIDDLE, color=WHITE)
             x += wdt
         y += rh
-        hline(s, ML, y, W - ML, BLACK, 0.75, dash=True)
+        hline(s, ML, y, W - ML, SOFT, 0.75, dash=True)
     d.notes(s, "Leave-behind for account managers. If a client mentions anything in 'Listen for', note who said it and bring us in "
                "with the matching blueprint.")
 
@@ -747,6 +774,7 @@ def build(out=OUT, only=None):
     if only is None:
         five_graphs_slide(d)
     for p in platforms:
+        section_slide(d, p)
         problem_slide(d, p)
         arch_slide(d, p)
         value_slide(d, p)
