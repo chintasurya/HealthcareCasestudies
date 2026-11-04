@@ -1,4 +1,4 @@
-"""Build the Insight Global healthcare graph-platform deck (python-pptx).
+"""Build the Insight Global "Healthcare AI Solution Blueprints" deck (python-pptx).
 
 Usage:
     python3 deck/extract_assets.py <PowerPoint_Template.pdf>   # once, creates deck/assets/
@@ -243,22 +243,26 @@ class Deck:
         s.notes_slide.notes_text_frame.text = text
 
 
+def bnum(p):
+    return f"{C.PLATFORMS.index(p) + 1:02d}"
+
+
 def plabel(p):
-    return f"{p['name'].upper()} · {p['domain'].upper()}"
+    return f"BLUEPRINT {bnum(p)} · {p['name'].upper()} · {p['domain'].upper()}"
 
 
 # ----------------------------------------------------------------------------- front slides
 def title_slide(d):
     s = d.slide(bg="bg_title.png")
-    tb(s, 1, 2.55, W - 2, 1.6, ["HEALTHCARE AI &", "AGENTIC SOLUTIONS"], size=42, light=True, color=WHITE,
+    tb(s, 1, 2.55, W - 2, 1.6, ["HEALTHCARE AI", "SOLUTION BLUEPRINTS"], size=42, light=True, color=WHITE,
        align=PP_ALIGN.CENTER, tracking=6, line=1.0)
-    tb(s, 1, 4.35, W - 2, 0.5, "Five knowledge-graph platforms across the healthcare value chain", size=18, color=WHITE,
+    tb(s, 1, 4.35, W - 2, 0.5, "Five knowledge-graph blueprints across the healthcare value chain", size=18, color=WHITE,
        align=PP_ALIGN.CENTER)
     tb(s, 1, 6.55, W - 2, 0.3, f"IGH PRESIDENT BRIEFING  ·  {C.DECK_DATE}", size=11, color=WHITE,
        align=PP_ALIGN.CENTER, tracking=4)
     d.notes(s, "Purpose: show what our core team can do in healthcare, and give account managers and sales five clear "
-               "platform stories (CareGraph, TherapyGraph, RxGraph, DeviceGraph, ChainGraph) to start conversations.\n\n"
-               "All five are at ideation stage: problem, solution, architecture and value. Figures marked 'Pilot target' are agreed "
+               "solution blueprints (CareGraph, TherapyGraph, RxGraph, DeviceGraph, ChainGraph) to start conversations.\n\n"
+               "Blueprints, not case studies: all five are proposed solutions at ideation stage: problem, solution, architecture and value. Figures marked 'Pilot target' are agreed "
                "with each client; sourced figures are public evidence.")
 
 
@@ -266,7 +270,7 @@ def agenda_slide(d):
     s = d.slide(bg="bg_dark_magenta.jpg")
     d.chrome(s)
     tb(s, ML, 0.75, 6, 0.8, "Agenda", size=40, bold=True, color=WHITE)
-    items = [("Who we are", None), ("Our approach", None)] + \
+    items = [("Who we are", None), ("Universal architecture", None)] + \
             [(p["name"], p["domain"]) for p in C.PLATFORMS] + [("How we engage", None)]
     for i, (it, sub) in enumerate(items):
         col, row = divmod(i, 4)
@@ -278,7 +282,8 @@ def agenda_slide(d):
                  anchor=MSO_ANCHOR.MIDDLE)
         else:
             tb(s, x + 0.72, y, 5.5, 0.5, it, size=22, light=True, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
-    d.notes(s, "Five domains, one graph platform each, each told in three slides: problem and solution, architecture, value. "
+    d.notes(s, "One universal architecture, then five solution blueprints, one per domain, each in three slides: problem and solution, "
+               "the blueprint on the universal architecture, value. "
                "We close with how we engage and a cheat sheet for sales.")
 
 
@@ -307,40 +312,11 @@ def who_slide(d):
                "(client name withheld; use it verbally only if cleared).")
 
 
-def approach_slide(d):
-    s = d.slide(bg="bg_dark_glow.jpg")
-    d.chrome(s)
-    tb(s, ML, 0.7, 12, 0.7, "One pattern, five graphs", size=32, bold=True, color=WHITE)
-    tb(s, ML, 1.45, 12, 0.4, "Every platform: data foundation  →  data readiness  →  intelligence core  →  agentic workflows  →  experience",
-       size=15, color=SOFT)
-    cols = [CYAN, YELLOW, MAGENTA, PURPLE, WHITE]
-    bw, gap, y = 2.25, 0.22, 2.3
-    for i, (t, desc, ic) in enumerate(C.APPROACH_COLUMNS):
-        x = ML + i * (bw + gap)
-        rect(s, x, y, bw, 2.45, line=cols[i], line_w=1.5, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.08)
-        oval(s, x + 0.22, y + 0.25, 0.52, fill=cols[i])
-        icon(s, ic, ink_on(cols[i]) if cols[i] != WHITE else BLACK, x + 0.34, y + 0.37, 0.28)
-        tb(s, x + 0.22, y + 0.8, bw - 0.4, 0.55, t, size=17, bold=True, color=WHITE, line=1.0, anchor=MSO_ANCHOR.BOTTOM)
-        tb(s, x + 0.22, y + 1.42, bw - 0.4, 0.9, desc, size=12.5, color=SOFT)
-        if i < 4:
-            tb(s, x + bw, y + 0.95, gap, 0.4, "›", size=24, color=WHITE, align=PP_ALIGN.CENTER)
-    rect(s, ML, 5.0, W - 2 * ML, 0.62, fill=MAGENTA)
-    tb(s, ML + 0.25, 5.0, W - 2 * ML - 0.5, 0.62, C.APPROACH_GOVERNANCE, size=13, bold=True, color=WHITE,
-       anchor=MSO_ANCHOR.MIDDLE)
-    tb(s, ML, 5.98, 1.6, 0.32, "Runs on any cloud", size=12, color=SOFT, anchor=MSO_ANCHOR.MIDDLE)
-    x = ML + 1.65
-    for c in C.CLOUDS:
-        x = pill(s, x, 5.98, c, WHITE, size=11)
-    d.notes(s, "This is the engine behind all five graphs. Same layers, same governance; only the data, the central entity and the agents "
-               "change per domain. That reuse is why we can stand up a new graph quickly. It is cloud-agnostic, with Salesforce as the "
-               "engagement layer where clients already use it.")
-
-
 def five_graphs_slide(d):
     s = d.slide(fill=WHITE)
     d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "Five graphs across the healthcare value chain", size=32, bold=True)
-    tb(s, ML, 1.42, 12, 0.4, "Each graph is built around one central entity and solves the whole set of problems in its domain.",
+    tb(s, ML, 0.7, 12, 0.7, "Five solution blueprints across the healthcare value chain", size=32, bold=True)
+    tb(s, ML, 1.42, 12, 0.4, "Each blueprint is built around one central entity and solves the whole set of problems in its domain.",
        size=15, color=GRAY)
     cw, gap = 2.3, 0.155
     for i, p in enumerate(C.PLATFORMS):
@@ -350,6 +326,7 @@ def five_graphs_slide(d):
         rect(s, x, 2.1, cw, 0.07, fill=acc)
         oval(s, x + 0.2, 2.42, 0.85, fill=acc)
         icon(s, p["icon"], ink_on(acc), x + 0.4, 2.62, 0.45)
+        tb(s, x + 1.15, 2.6, cw - 1.2, 0.5, f"BLUEPRINT\n{bnum(p)}".split("\n"), size=8.5, bold=True, color=GRAY, tracking=1.2, line=1.0)
         tb(s, x + 0.2, 3.42, cw - 0.3, 0.42, p["name"], size=20, bold=True)
         tb(s, x + 0.2, 3.84, cw - 0.3, 0.42, p["domain"].upper(), size=8.5, bold=True, color=GRAY, tracking=1.2)
         rich(s, x + 0.2, 4.3, cw - 0.3, 0.3, [("Center: ", GRAY, False), (p["center"][0], BLACK, True)], size=11)
@@ -359,12 +336,12 @@ def five_graphs_slide(d):
             h = text_h(title, 10.5, cw - 0.65)
             tb(s, x + 0.45, y, cw - 0.6, h, title, size=10.5)
             y += h + 0.07
-    d.notes(s, "The five platforms at a glance. Pick the graph that matches the client in front of you: provider or payer → CareGraph; "
+    d.notes(s, "The five blueprints at a glance. Pick the blueprint that matches the client in front of you: provider or payer → CareGraph; "
                "pharma commercial or clinical → TherapyGraph; pharmacy, PBM or patient hub → RxGraph; MedTech or virtual care → DeviceGraph; "
                "manufacturing, CDMO or distribution → ChainGraph.")
 
 
-# ----------------------------------------------------------------------------- platform slides
+# ----------------------------------------------------------------------------- blueprint slides
 def problem_slide(d, p):
     s = d.slide(fill=WHITE)
     rect(s, W / 2, 0, W / 2, H, fill=BLACK)
@@ -417,7 +394,7 @@ def problem_slide(d, p):
         if x + wpill > rx + rw:
             x, yy = rx, yy + 0.4
         x = pill(s, x, yy, b, WHITE, size=11)
-    d.notes(s, "PRESIDENT CUT: present this platform.\n\nTalk track: " + p["talk"])
+    d.notes(s, "PRESIDENT CUT: present this blueprint.\n\nTalk track: " + p["talk"])
 
 
 def panel(s, x, y, w, h, title, sub, ic, acc):
@@ -430,77 +407,72 @@ def panel(s, x, y, w, h, title, sub, ic, acc):
 
 ARCH_LAYERS = [("DATA FOUNDATION", "Sources we connect", "database"),
                ("DATA READINESS", "Matching, masking, codes", "shield-check"),
-               ("INTELLIGENCE CORE", "The {name} model", "network"),
+               ("INTELLIGENCE CORE", "The {model} model", "network"),
                ("AGENTIC WORKFLOWS", "Agents + where users see it", "bot")]
+ARCH_TOP, ARCH_PH, ARCH_GAP = 1.55, 4.38, 0.16
+ARCH_WIDTHS = [2.45, 2.07, 3.83, 3.3]
 
 
-def arch_slide(d, p):
-    s = d.slide(fill=WHITE)
-    d.chrome(s, label=plabel(p) + " · ARCHITECTURE", dark=False)
-    acc = ACCENTS[p["accent"]]
+def hub(s, cx, cy, center_label, center_icon, spokes, acc, rx_=1.38, ry_=1.08, sd=0.84, cd=1.08):
+    """Hub-and-spoke graph. spokes: list of (label or [lines], icon, color)."""
+    n = len(spokes)
+    pos = []
+    for k in range(n):
+        a = math.radians(-90 + k * 360 / n)
+        pos.append((cx + rx_ * math.cos(a), cy + ry_ * math.sin(a)))
+    for px, py in pos:
+        connector(s, cx, cy, px, py, SOFT, 1.25)
+    oval(s, cx - cd / 2, cy - cd / 2, cd, fill=acc)
+    icon(s, center_icon, ink_on(acc), cx - 0.19, cy - 0.38, 0.38)
+    tb(s, cx - cd / 2 + 0.05, cy + 0.02, cd - 0.1, 0.4, center_label, size=10, bold=True, color=ink_on(acc),
+       align=PP_ALIGN.CENTER, line=0.95)
+    for (lab, ic, col), (px, py) in zip(spokes, pos):
+        oval(s, px - sd / 2, py - sd / 2, sd, fill=WHITE, line=col, line_w=2.0)
+        icon(s, ic, on_white(col), px - 0.13, py - 0.33, 0.26)
+        tb(s, px - sd / 2 + 0.04, py - 0.04, sd - 0.08, 0.38, lab, size=7.5, bold=True, align=PP_ALIGN.CENTER, line=0.95)
+
+
+def arch_body(s, acc, model, sources, prepare, standards, center, spokes, crew_title, crew_sub, crew, outputs,
+              strip_label, strip_items):
+    """The four business layers + bottom strip, shared by the universal and the blueprint architecture slides."""
     acc_w = on_white(acc)
-    # header: icon tile + name + promise line
-    rect(s, ML, 0.6, 0.62, 0.62, fill=acc, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.2)
-    icon(s, p["icon"], ink_on(acc), ML + 0.13, 0.73, 0.36)
-    name_w = len(p["name"]) * 28 * 0.6 / 72 + 0.15
-    tb(s, ML + 0.8, 0.55, name_w, 0.5, p["name"], size=28, bold=True)
-    tb(s, ML + 0.8 + name_w, 0.66, 8.0, 0.4, p["promise"], size=18, light=True, color=acc_w)
-    tb(s, ML + 0.8, 1.08, 11.5, 0.3, p["subtitle"], size=12, color=GRAY)
-
-    top, ph, gap = 1.55, 4.38, 0.16
-    widths = [2.45, 2.07, 3.83, 3.3]
+    top, ph, gap, widths = ARCH_TOP, ARCH_PH, ARCH_GAP, ARCH_WIDTHS
     xs = [ML]
     for wdt in widths[:-1]:
         xs.append(xs[-1] + wdt + gap)
     for i, ((t, sub, ic), x, wdt) in enumerate(zip(ARCH_LAYERS, xs, widths)):
-        panel(s, x, top, wdt, ph, t, sub.format(name=p["name"]), ic, acc)
+        panel(s, x, top, wdt, ph, t, sub.format(model=model), ic, acc)
         if i < 3:
             tri_right(s, x + wdt + 0.035, top + ph / 2 - 0.09, GRAY)
 
-    # 1. data foundation
+    # data foundation
     x, wdt = xs[0], widths[0]
     y = top + 0.72
-    for k, (name, desc, ic) in enumerate(p["sources"]):
+    for k, (name, desc, ic) in enumerate(sources):
         rbox(s, x + 0.12, y, wdt - 0.24, 0.55)
         icon(s, ic, on_white(SPOKE_COLORS[k % 6]), x + 0.22, y + 0.13, 0.29)
         tb(s, x + 0.62, y + 0.05, wdt - 0.8, 0.24, name, size=9.5, bold=True)
         tb(s, x + 0.62, y + 0.27, wdt - 0.8, 0.28, desc, size=8.5, color=GRAY, line=1.0)
         y += 0.6
 
-    # 2. data readiness: plain-English steps
+    # data readiness
     x, wdt = xs[1], widths[1]
     y = top + 0.74
-    for k, (ic, step) in enumerate(p["prepare"]):
+    for k, (ic, step) in enumerate(prepare):
         rbox(s, x + 0.12, y, wdt - 0.24, 0.8)
         icon(s, ic, on_white(SPOKE_COLORS[k]), x + wdt / 2 - 0.14, y + 0.08, 0.28)
         tb(s, x + 0.16, y + 0.4, wdt - 0.32, 0.38, step, size=9, bold=True, align=PP_ALIGN.CENTER, line=1.0)
         y += 0.9
 
-    # 3. intelligence core: standards chips + hub and spoke
+    # intelligence core
     x, wdt = xs[2], widths[2]
     tb(s, x + 0.14, top + 0.72, 0.85, 0.3, "Standards", size=8.5, color=GRAY, anchor=MSO_ANCHOR.MIDDLE)
     cxp = x + 0.95
-    for st in p["standards"]:
-        cxp = pill(s, cxp, top + 0.72, st, acc_w if isinstance(acc_w, RGBColor) else _rgb(acc_w), size=8.5, h=0.28) - 0.04
-    cx, cy = x + wdt / 2, top + 1.12 + (ph - 1.12) / 2
-    rx_, ry_, sd, cd = 1.38, 1.08, 0.84, 1.08
-    pos = []
-    for k in range(8):
-        a = math.radians(-90 + k * 45)
-        pos.append((cx + rx_ * math.cos(a), cy + ry_ * math.sin(a)))
-    for px, py in pos:
-        connector(s, cx, cy, px, py, SOFT, 1.25)
-    oval(s, cx - cd / 2, cy - cd / 2, cd, fill=acc)
-    icon(s, p["center"][1], ink_on(acc), cx - 0.19, cy - 0.38, 0.38)
-    tb(s, cx - cd / 2 + 0.05, cy + 0.02, cd - 0.1, 0.36, p["center"][0], size=10.5, bold=True, color=ink_on(acc),
-       align=PP_ALIGN.CENTER, line=1.0)
-    for k, ((lab, ic), (px, py)) in enumerate(zip(p["spokes"], pos)):
-        col = SPOKE_COLORS[k]
-        oval(s, px - sd / 2, py - sd / 2, sd, fill=WHITE, line=col, line_w=2.0)
-        icon(s, ic, on_white(col), px - 0.13, py - 0.33, 0.26)
-        tb(s, px - sd / 2 + 0.05, py - 0.04, sd - 0.1, 0.36, lab, size=7.5, bold=True, align=PP_ALIGN.CENTER, line=0.95)
+    for st in standards:
+        cxp = pill(s, cxp, top + 0.72, st, _rgb(acc_w), size=8.5, h=0.28) - 0.06
+    hub(s, x + wdt / 2, top + 1.12 + (ph - 1.12) / 2, center[0], center[1], spokes, acc)
 
-    # 4. agentic workflows
+    # agentic workflows
     x, wdt = xs[3], widths[3]
     lx, lwid = x + 0.12, 1.74
     ox, owid = x + wdt - 0.12 - 1.18, 1.18
@@ -509,15 +481,14 @@ def arch_slide(d, p):
     icon(s, "lock", acc_w, lx + 0.1, y0 + 0.16, 0.28)
     tb(s, lx + 0.46, y0 + 0.07, lwid - 0.5, 0.26, "Secure access", size=10, bold=True)
     tb(s, lx + 0.46, y0 + 0.32, lwid - 0.5, 0.26, "APIs · MCP tools", size=8.5, color=GRAY)
-    ay = y0 + 0.74
-    ah = 2.05
+    ay, ah = y0 + 0.74, 2.05
     rbox(s, lx, ay, lwid, ah, line=acc, line_w=1.5)
     icon(s, "bot", acc_w, lx + 0.1, ay + 0.12, 0.3)
-    tb(s, lx + 0.46, ay + 0.08, lwid - 0.5, 0.26, "AI agent crew", size=10, bold=True)
-    tb(s, lx + 0.46, ay + 0.32, lwid - 0.5, 0.26, "model-agnostic", size=8.5, color=GRAY)
+    tb(s, lx + 0.46, ay + 0.08, lwid - 0.5, 0.26, crew_title, size=10, bold=True)
+    tb(s, lx + 0.46, ay + 0.32, lwid - 0.5, 0.26, crew_sub, size=8.5, color=GRAY)
     yy = ay + 0.68
-    for ag in p["agents"]:
-        oval(s, lx + 0.16, yy + 0.07, 0.07, fill=acc if acc not in (YELLOW,) else ORANGE)
+    for ag in crew:
+        oval(s, lx + 0.16, yy + 0.07, 0.07, fill=acc if acc != YELLOW else ORANGE)
         tb(s, lx + 0.32, yy, lwid - 0.38, 0.26, ag, size=9)
         yy += 0.26
     gy = ay + ah + 0.1
@@ -527,31 +498,73 @@ def arch_slide(d, p):
     tb(s, lx + 0.45, gy + 0.24, lwid - 0.5, 0.4, C.GOVERNANCE_LINE, size=7.5, color=GRAY, line=1.0)
     oh, og = 0.98, 0.26
     oy = y0 + 0.2
-    for k, (lab, ic) in enumerate(p["outputs"]):
-        lab = f"Ask {p['name']}" if lab == "Ask the graph" else lab
+    for k, (lab, ic) in enumerate(outputs):
         by = oy + k * (oh + og)
         rbox(s, ox, by, owid, oh)
         icon(s, ic, on_white(SPOKE_COLORS[k]), ox + owid / 2 - 0.16, by + 0.1, 0.32)
         tb(s, ox + 0.06, by + 0.48, owid - 0.12, 0.46, lab, size=9, bold=True, align=PP_ALIGN.CENTER, line=1.0)
         connector(s, lx + lwid, ay + 0.45 + k * 0.6, ox, by + oh / 2, GRAY, 1.0, arrow=True)
 
-    # outcomes strip
+    # bottom strip
     cy0 = top + ph + 0.15
     rect(s, ML, cy0, W - 2 * ML, 0.66, fill=LIGHT, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.18)
     rect(s, ML + 0.08, cy0 + 0.08, 1.3, 0.5, fill=BLACK, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.3)
-    tb(s, ML + 0.08, cy0 + 0.08, 1.3, 0.5, "Outcomes", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
+    tb(s, ML + 0.08, cy0 + 0.08, 1.3, 0.5, strip_label, size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
        anchor=MSO_ANCHOR.MIDDLE)
-    iw = (W - 2 * ML - 1.55) / len(p["outcomes"])
-    for k, (lab, ic) in enumerate(p["outcomes"]):
+    iw = (W - 2 * ML - 1.55) / len(strip_items)
+    for k, (lab, ic) in enumerate(strip_items):
         ix = ML + 1.55 + k * iw
         icon(s, ic, on_white(SPOKE_COLORS[k % 6]), ix, cy0 + 0.18, 0.3)
         tb(s, ix + 0.37, cy0 + 0.06, iw - 0.42, 0.54, lab, size=9.5, bold=True, anchor=MSO_ANCHOR.MIDDLE, line=1.0)
 
-    d.notes(s, f"Walk left to right through the four layers. Data foundation: public reference data plus the client's own systems. "
-               f"Data readiness: we match identities, map everything to standard codes, mask PHI and make documents searchable. "
+
+def arch_header(s, title, promise, tile_fill, tile_icon, promise_color):
+    rect(s, ML, 0.6, 0.62, 0.62, fill=tile_fill, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.2)
+    icon(s, tile_icon, ink_on(tile_fill), ML + 0.13, 0.73, 0.36)
+    name_w = len(title) * 28 * 0.53 / 72 + 0.2
+    tb(s, ML + 0.8, 0.55, name_w, 0.5, title, size=28, bold=True)
+    tb(s, ML + 0.8 + name_w, 0.66, 12.0 - name_w, 0.4, promise, size=18, light=True, color=promise_color)
+
+
+def universal_arch_slide(d):
+    s = d.slide(fill=WHITE)
+    d.chrome(s, label=C.DECK_LABEL + " · UNIVERSAL ARCHITECTURE", dark=False)
+    U = C.UNIVERSAL
+    arch_header(s, "Universal architecture", U["promise"], BLACK, "network", on_white(MAGENTA))
+    tb(s, ML + 0.8, 1.08, 11.8, 0.3, U["subtitle"], size=12, color=GRAY)
+    spokes = [([p["center"][0], p["name"]], p["center"][1], ACCENTS[p["accent"]]) for p in C.PLATFORMS]
+    arch_body(s, MAGENTA, "domain", U["sources"], U["prepare"], U["standards"], ("Central entity", "network"), spokes,
+              "AI agent crew", "model-agnostic", U["agent_skills"], U["outputs"], "Runs on", U["runs_on"])
+    d.notes(s, "This is the one architecture behind every blueprint. Four layers: data foundation (what we connect), data readiness "
+               "(match identities, map to standard codes, mask PHI, make documents searchable), intelligence core (a domain model with "
+               "one central entity: Patient, Therapy, Medication, Device or Product lot), and agentic workflows (an agent crew that plans, "
+               "retrieves, drafts, checks and hands off to a person, delivering into Salesforce, dashboards and plain-English questions). "
+               "The trust layer covers everything. Because the architecture is shared, a new blueprint reuses about 80% of the build; "
+               "only the data, the central entity and the agents change. It runs on Google Cloud, AWS or Azure, with any LLM.")
+
+
+def arch_slide(d, p):
+    s = d.slide(fill=WHITE)
+    d.chrome(s, label=plabel(p) + " · ON THE UNIVERSAL ARCHITECTURE", dark=False)
+    acc = ACCENTS[p["accent"]]
+    arch_header(s, p["name"], p["promise"], acc, p["icon"], on_white(acc))
+    # layer ribbon: ties this slide back to the universal architecture
+    tb(s, ML + 0.8, 1.06, 2.3, 0.3, "On the universal architecture:", size=10.5, color=GRAY, anchor=MSO_ANCHOR.MIDDLE)
+    x = ML + 3.0
+    for i, (t, _, _) in enumerate(ARCH_LAYERS):
+        x = pill(s, x, 1.07, t.title().replace("Ai", "AI"), BLACK, size=9, h=0.28)
+        if i < 3:
+            tb(s, x - 0.1, 1.06, 0.2, 0.3, "›", size=12, color=GRAY, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+            x += 0.1
+    spokes = [(lab, ic, SPOKE_COLORS[k]) for k, (lab, ic) in enumerate(p["spokes"])]
+    outputs = [(f"Ask {p['name']}" if lab == "Ask the graph" else lab, ic) for lab, ic in p["outputs"]]
+    arch_body(s, acc, p["name"], p["sources"], p["prepare"], p["standards"], p["center"], spokes,
+              "AI agent crew", "model-agnostic", p["agents"], outputs, "Outcomes", p["outcomes"])
+    d.notes(s, f"This is {p['name']} on the universal architecture: same four layers, filled with {p['domain'].lower()} content. "
+               f"Data foundation: the sources on the left. Data readiness: matching, standard codes, PHI masking and search. "
                f"Intelligence core: the {p['name']} model puts {p['center'][0]} at the center and connects every related entity, so "
-               f"answers are grounded and cited. Agentic workflows: a crew of specialist agents works through secure access and delivers "
-               f"into Salesforce, dashboards and plain-English questions. The trust layer means a person approves anything that matters. "
+               f"answers are grounded and cited. Agentic workflows: the agent crew works through secure access and delivers into "
+               f"Salesforce, dashboards and plain-English questions. A person approves anything that matters. "
                f"The outcomes strip is what the client gets.")
 
 
@@ -602,16 +615,16 @@ def engage_slide(d):
         tb(s, x + 0.2, top, 2.85, 0.3, name, size=15, bold=True, color=WHITE)
         tb(s, x + 0.2, top + 0.32, 2.85, 0.28, dur.upper(), size=10, bold=True, color=CYAN, tracking=1.5)
         tb(s, x + 0.2, top + 0.65, 2.85, 0.85, desc, size=12.5, color=SOFT)
-    tb(s, ML, 6.0, W - 2 * ML, 0.4, "Next step: pick one graph and run a 2-week ideation workshop with the client.",
+    tb(s, ML, 6.0, W - 2 * ML, 0.4, "Next step: pick one blueprint and run a 2-week ideation workshop with the client.",
        size=16, color=WHITE)
     d.notes(s, "The ask for account managers: when you hear one of these needs, bring us in for a 2-week ideation workshop. "
-               "We leave the client with a chosen graph and first modules, an architecture, agreed KPIs and a proof-of-concept plan.")
+               "We leave the client with a chosen blueprint and first modules, an architecture, agreed KPIs and a proof-of-concept plan.")
 
 
 def cheatsheet_slide(d):
     s = d.slide(fill=WHITE)
     d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "Sales cheat sheet: which graph to bring", size=32, bold=True)
+    tb(s, ML, 0.7, 12, 0.7, "Sales cheat sheet: which blueprint to bring", size=32, bold=True)
     widths = [3.0, 5.4, 3.73]
     heads = ["Bring", "Listen for…", "Who to talk to"]
     y = 1.65
@@ -637,16 +650,16 @@ def cheatsheet_slide(d):
         y += rh
         hline(s, ML, y, W - ML, BLACK, 0.75, dash=True)
     d.notes(s, "Leave-behind for account managers. If a client mentions anything in 'Listen for', note who said it and bring us in "
-               "with the matching graph.")
+               "with the matching blueprint.")
 
 
 def thankyou_slide(d):
     s = d.slide(bg="bg_thankyou.png")
-    d.notes(s, "Thank you. Next step: agree which client and which graph to take into an ideation workshop first.")
+    d.notes(s, "Thank you. Next step: agree which client and which blueprint to take into an ideation workshop first.")
 
 
 def build(out=OUT, only=None):
-    """only: a platform name -> preview build with just the approach slide and that platform's 3 slides."""
+    """only: a blueprint name -> preview build with just the universal architecture and that blueprint's 3 slides."""
     MISSING_ICONS.clear()
     d = Deck()
     platforms = [p for p in C.PLATFORMS if only is None or p["name"].lower() == only.lower()]
@@ -654,7 +667,7 @@ def build(out=OUT, only=None):
         title_slide(d)
         agenda_slide(d)
         who_slide(d)
-    approach_slide(d)
+    universal_arch_slide(d)
     if only is None:
         five_graphs_slide(d)
     for p in platforms:
@@ -680,7 +693,7 @@ def render_icons(icon_dir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--icons", help="path to lucide-static/icons (renders any missing icons)")
-    ap.add_argument("--only", help="preview: build only one platform (e.g. CareGraph) plus the approach slide")
+    ap.add_argument("--only", help="preview: build only one blueprint (e.g. CareGraph) plus the universal architecture")
     ap.add_argument("--out", default=str(OUT), help="output .pptx path")
     args = ap.parse_args()
     n = build(args.out, args.only)

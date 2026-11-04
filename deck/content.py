@@ -6,7 +6,7 @@ Value figures are either sourced public evidence (source given) or a pilot targe
 labelled as such. Graph stats are design counts, not data volumes.
 """
 
-DECK_LABEL = "HEALTHCARE AI CASE STUDIES"
+DECK_LABEL = "HEALTHCARE AI SOLUTION BLUEPRINTS"
 DECK_DATE = "NOVEMBER 2026"
 
 CAPABILITIES = [
@@ -27,22 +27,31 @@ CAPABILITIES = [
 PROOF_POINT = ("We built a governed agentic delivery platform for a large US health system "
                "(Salesforce Health and Marketing Cloud, masked data context, compliance guardian, human approval gates).")
 
-APPROACH_COLUMNS = [
-    ("Data foundation", "Public reference data + client systems (EHR, CRM, QMS, devices)", "database"),
-    ("Data readiness", "Match identities, map to standard codes, mask PHI", "shield-check"),
-    ("Intelligence core", "One central entity with connected spokes: the domain model", "network"),
-    ("Agentic workflows", "Specialist agents that plan, cite and hand off to people", "bot"),
-    ("Experience", "Salesforce, dashboards, plain-English questions", "layout-dashboard"),
-]
-APPROACH_GOVERNANCE = "Governance built in: guardrails in and out · PHI masking & minimum-data access · human approval gates · evaluation sets · audit trail"
-CLOUDS = ["Google Cloud", "AWS", "Azure", "Salesforce"]
-
 ENGAGEMENT_STEPS = [
-    ("Ideation workshop · 2 weeks", "Pick the graph and first modules, map data and stakeholders, agree success metrics."),
-    ("Proof of concept · 6–8 weeks", "Working graph and agents on public and synthetic data, architecture signed off, sponsor demo."),
+    ("Ideation workshop · 2 weeks", "Pick the blueprint and first modules, map data and stakeholders, agree success metrics."),
+    ("Proof of concept · 6–8 weeks", "Working blueprint on public and synthetic data, architecture signed off, sponsor demo."),
     ("Pilot · ~3 months", "Real users, governed client data, measured against the agreed KPIs."),
-    ("Scale · ongoing", "Add modules and sites, then the next graph on the same platform."),
+    ("Scale · ongoing", "Add modules and sites, then the next blueprint on the same architecture."),
 ]
+
+UNIVERSAL = {
+    "promise": "One architecture, five blueprints",
+    "subtitle": "Every blueprint uses the same four layers and trust layer, and runs on any cloud. Only the data, the central entity and the agents change.",
+    "sources": [
+        ("Clinical systems", "EHR, claims (FHIR)", "hospital"),
+        ("CRM & engagement", "Salesforce, contact center", "message-square"),
+        ("Quality & operations", "QMS, MES, ERP", "factory"),
+        ("Devices & IoT", "Wearables, connected devices", "watch"),
+        ("Public reference data", "CMS, FDA, NLM, CDC", "database"),
+        ("Documents & content", "Policies, SOPs, labels", "file-text"),
+    ],
+    "prepare": [("users", "Match identities"), ("tags", "Map to standard codes"),
+                ("lock", "Mask PHI & apply consent"), ("file-search", "Make documents searchable")],
+    "standards": ["FHIR", "ICD-10", "RxNorm", "UDI"],
+    "agent_skills": ["Plan the task", "Retrieve facts", "Draft the output", "Check the rules", "Hand off to a person"],
+    "outputs": [("Salesforce", "layout-dashboard"), ("Dashboards", "gauge"), ("Ask in plain English", "message-square")],
+    "runs_on": [("Google Cloud", "cloud"), ("AWS", "cloud"), ("Azure", "cloud"), ("Salesforce", "layout-dashboard"), ("Any LLM", "bot")],
+}
 
 GOVERNANCE_LINE = "PHI masking · guardrails in & out · human approval · audit trail"
 
