@@ -28,7 +28,8 @@ import content as C
 HERE = Path(__file__).resolve().parent
 ASSETS = HERE / "assets"
 ICONS = ASSETS / "icons"
-OUT = HERE / "IG_Healthcare_AI_Case_Studies.pptx"
+LOGOS = ASSETS / "logos"
+OUT = HERE / "IG_Healthcare_AI_Solution_Blueprints.pptx"
 
 # Brand (from the Insight Global template user guide)
 FONT = "Trenda IG Text"
@@ -213,6 +214,36 @@ def icon(slide, name, color, x, y, size):
     return slide.shapes.add_picture(str(path), Inches(x), Inches(y), Inches(size), Inches(size))
 
 
+SF_PRODUCTS = ("Cloud", "Agentforce", "Tableau", "MuleSoft", "Salesforce")
+
+
+def logo(slide, key, x, y, h):
+    """Place a vendor logo (deck/assets/logos/<key>.png) at height h; returns its width."""
+    from PIL import Image
+    path = LOGOS / f"{key}.png"
+    w_px, h_px = Image.open(path).size
+    w = h * w_px / h_px
+    slide.shapes.add_picture(str(path), Inches(x), Inches(y), Inches(w), Inches(h))
+    return w
+
+
+def is_salesforce(label):
+    return any(k in label for k in SF_PRODUCTS) and "Any cloud" not in label
+
+
+def logo_pill(slide, x, y, text, color, size=11, h=0.32, key="salesforce"):
+    """Pill with a vendor logo on the left."""
+    lh = h - 0.1
+    from PIL import Image
+    w_px, h_px = Image.open(LOGOS / f"{key}.png").size
+    lw = lh * w_px / h_px
+    w = len(text) * size * 0.56 / 72 + 0.36 + lw + 0.08
+    rect(slide, x, y, w, h, line=color, line_w=1.0, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.5)
+    logo(slide, key, x + 0.14, y + 0.05, lh)
+    tb(slide, x + 0.14 + lw + 0.06, y, w - lw - 0.3, h, text, size=size, color=color, anchor=MSO_ANCHOR.MIDDLE)
+    return x + w + 0.12
+
+
 class Deck:
     def __init__(self):
         self.prs = Presentation()
@@ -231,7 +262,7 @@ class Deck:
 
     def chrome(self, s, label=C.DECK_LABEL, dark=True, num_dark=None):
         col = WHITE if dark else BLACK
-        tb(s, ML, 0.3, 8, 0.25, label, size=8, bold=True, color=col, tracking=2.2)
+        tb(s, ML, 0.3, 12, 0.25, label, size=8, bold=True, color=col, tracking=2.2)
         for i in range(3):  # ●●●IG footer mark
             oval(s, ML + i * 0.135, 7.12, 0.105, fill=col)
         tb(s, ML + 0.42, 7.065, 0.4, 0.22, "IG", size=10, bold=True, color=col)
@@ -304,6 +335,16 @@ def who_slide(d):
         icon(s, icons[i], ink_on(cols[i]), x + 0.36, y + 0.31, 0.28)
         tb(s, x + 0.25, y + 0.72, tw - 0.5, 0.5, t, size=16, bold=True, line=1.0, anchor=MSO_ANCHOR.BOTTOM)
         tb(s, x + 0.25, y + 1.28, tw - 0.5, 0.55, desc, size=11.5, color=GRAY)
+        if i == 2:
+            logo(s, "salesforce", x + tw - 0.25 - 0.62, y + 0.2, 0.44)
+        if i == 3:
+            lx_ = x + tw - 0.25
+            for key, hh in (("azure", 0.38), ("aws", 0.3), ("googlecloud", 0.38)):
+                from PIL import Image
+                wpx, hpx = Image.open(LOGOS / f"{key}.png").size
+                lx_ -= hh * wpx / hpx
+                logo(s, key, lx_, y + 0.22 + (0.38 - hh) / 2, hh)
+                lx_ -= 0.15
     rect(s, ML, 6.15, W - 2 * ML, 0.68, fill=BLACK)
     tb(s, ML + 0.25, 6.15, 1.5, 0.68, "PROOF POINT", size=10, bold=True, color=YELLOW, tracking=2, anchor=MSO_ANCHOR.MIDDLE)
     tb(s, ML + 1.75, 6.15, W - 2 * ML - 2.0, 0.68, C.PROOF_POINT, size=12.5, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
@@ -315,7 +356,7 @@ def who_slide(d):
 def five_graphs_slide(d):
     s = d.slide(fill=WHITE)
     d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "Five solution blueprints across the healthcare value chain", size=32, bold=True)
+    tb(s, ML, 0.7, 12, 0.7, "Five blueprints across the healthcare value chain", size=32, bold=True)
     tb(s, ML, 1.42, 12, 0.4, "Each blueprint is built around one central entity and solves the whole set of problems in its domain.",
        size=15, color=GRAY)
     cw, gap = 2.3, 0.155
@@ -349,27 +390,38 @@ def problem_slide(d, p):
     acc = ACCENTS[p["accent"]]
     lw = W / 2 - ML - 0.45
     tb(s, ML, 0.7, lw, 0.25, "THE PROBLEM", size=10, bold=True, color=MAGENTA, tracking=2.2)
-    th = text_h(p["headline"], 22, lw, 1.1)
-    tb(s, ML, 0.98, lw, th, p["headline"], size=22, bold=True, line=1.0)
-    y = 0.98 + th + 0.18
-    h = text_h(p["problem"], 13, lw)
-    tb(s, ML, y, lw, h, p["problem"], size=13)
-    y += h + 0.12
+    th = text_h(p["headline"], 21, lw, 1.1)
+    tb(s, ML, 0.98, lw, th, p["headline"], size=21, bold=True, line=1.0)
+    y = 0.98 + th + 0.15
+    h = text_h(p["problem"], 12.5, lw)
+    tb(s, ML, y, lw, h, p["problem"], size=12.5)
+    y += h + 0.08
     who = "Who feels it: " + p["who"]
-    h = text_h(who, 11, lw)
-    tb(s, ML, y, lw, h, who, size=11, italic=True, color=GRAY)
-    y += h + 0.28
+    h = text_h(who, 10.5, lw)
+    tb(s, ML, y, lw, h, who, size=10.5, italic=True, color=GRAY)
+    y += h + 0.22
     tb(s, ML, y, lw, 0.25, "PROBLEMS IT SOLVES", size=10, bold=True, color=MAGENTA, tracking=2.2)
-    y += 0.38
+    y += 0.34
     cw = (lw - 0.2) / 2
+    pitch = 0.74
     for i, (ic, title, desc) in enumerate(p["problems"]):
         c, r = i % 2, i // 2
-        x, yy = ML + c * (cw + 0.2), y + r * 0.86
-        oval(s, x, yy, 0.46, fill=LIGHT)
-        icon(s, ic, on_white(MAGENTA), x + 0.1, yy + 0.1, 0.26)
-        t_h = text_h(title, 12, cw - 0.6, 1.1)
-        tb(s, x + 0.58, yy, cw - 0.6, t_h, title, size=12, bold=True, line=1.0)
-        tb(s, x + 0.58, yy + t_h + 0.02, cw - 0.6, 0.5, desc, size=10.5, color=GRAY, line=1.0)
+        x, yy = ML + c * (cw + 0.2), y + r * pitch
+        oval(s, x, yy, 0.42, fill=LIGHT)
+        icon(s, ic, on_white(MAGENTA), x + 0.09, yy + 0.09, 0.24)
+        t_h = text_h(title, 11.5, cw - 0.55, 1.1)
+        tb(s, x + 0.52, yy - 0.01, cw - 0.55, t_h, title, size=11.5, bold=True, line=1.0)
+        tb(s, x + 0.52, yy + t_h + 0.01, cw - 0.55, 0.4, desc, size=10, color=GRAY, line=1.0)
+    # evidence callout: published research or another organization's reported result
+    big, txt, src = p["evidence"]
+    fy = y + 3 * pitch + 0.08
+    hline(s, ML, fy, ML + lw, BLACK, 0.75, dash=True)
+    tb(s, ML, fy + 0.08, 2, 0.22, "EVIDENCE FROM THE FIELD", size=8, bold=True, color=GRAY, tracking=1.5)
+    bw = max(1.1, len(big) * 26 * 0.55 / 72 + 0.2)
+    tb(s, ML, fy + 0.3, bw, 0.5, big, size=26, light=True, color=MAGENTA)
+    th_ = text_h(txt, 11, lw - bw - 0.1)
+    tb(s, ML + bw + 0.1, fy + 0.32, lw - bw - 0.1, th_, txt, size=11)
+    tb(s, ML + bw + 0.1, fy + 0.34 + th_, lw - bw - 0.1, 0.22, "Source: " + src, size=9, italic=True, color=GRAY)
 
     rx, rw = W / 2 + 0.55, W / 2 - 1.15
     tb(s, rx, 0.7, rw, 0.3, "OUR SOLUTION", size=10, bold=True, color=CYAN, tracking=2.2)
@@ -390,10 +442,11 @@ def problem_slide(d, p):
     tb(s, rx, by, rw, 0.25, "BUILT ON", size=9, bold=True, color=SOFT, tracking=2)
     x, yy = rx, by + 0.3
     for b in p["built_on"]:
-        wpill = len(b) * 11 * 0.56 / 72 + 0.36
+        sf = is_salesforce(b)
+        wpill = len(b) * 11 * 0.56 / 72 + 0.36 + (0.4 if sf else 0)
         if x + wpill > rx + rw:
             x, yy = rx, yy + 0.4
-        x = pill(s, x, yy, b, WHITE, size=11)
+        x = logo_pill(s, x, yy, b, WHITE, size=11) if sf else pill(s, x, yy, b, WHITE, size=11)
     d.notes(s, "PRESIDENT CUT: present this blueprint.\n\nTalk track: " + p["talk"])
 
 
@@ -466,8 +519,12 @@ def arch_body(s, acc, model, sources, prepare, standards, center, spokes, crew_t
 
     # intelligence core
     x, wdt = xs[2], widths[2]
-    tb(s, x + 0.14, top + 0.72, 0.85, 0.3, "Standards", size=8.5, color=GRAY, anchor=MSO_ANCHOR.MIDDLE)
-    cxp = x + 0.95
+    chips_w = sum(len(st) * 8.5 * 0.56 / 72 + 0.36 for st in standards) + 0.06 * len(standards)
+    if chips_w <= wdt - 0.95 - 0.12:
+        tb(s, x + 0.14, top + 0.72, 0.85, 0.3, "Standards", size=8.5, color=GRAY, anchor=MSO_ANCHOR.MIDDLE)
+        cxp = x + 0.95
+    else:
+        cxp = x + 0.14
     for st in standards:
         cxp = pill(s, cxp, top + 0.72, st, _rgb(acc_w), size=8.5, h=0.28) - 0.06
     hub(s, x + wdt / 2, top + 1.12 + (ph - 1.12) / 2, center[0], center[1], spokes, acc)
@@ -501,7 +558,10 @@ def arch_body(s, acc, model, sources, prepare, standards, center, spokes, crew_t
     for k, (lab, ic) in enumerate(outputs):
         by = oy + k * (oh + og)
         rbox(s, ox, by, owid, oh)
-        icon(s, ic, on_white(SPOKE_COLORS[k]), ox + owid / 2 - 0.16, by + 0.1, 0.32)
+        if is_salesforce(lab):
+            logo(s, "salesforce", ox + owid / 2 - 0.23, by + 0.1, 0.32)
+        else:
+            icon(s, ic, on_white(SPOKE_COLORS[k]), ox + owid / 2 - 0.16, by + 0.1, 0.32)
         tb(s, ox + 0.06, by + 0.48, owid - 0.12, 0.46, lab, size=9, bold=True, align=PP_ALIGN.CENTER, line=1.0)
         connector(s, lx + lwid, ay + 0.45 + k * 0.6, ox, by + oh / 2, GRAY, 1.0, arrow=True)
 
@@ -512,16 +572,22 @@ def arch_body(s, acc, model, sources, prepare, standards, center, spokes, crew_t
     tb(s, ML + 0.08, cy0 + 0.08, 1.3, 0.5, strip_label, size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
        anchor=MSO_ANCHOR.MIDDLE)
     iw = (W - 2 * ML - 1.55) / len(strip_items)
-    for k, (lab, ic) in enumerate(strip_items):
+    for k, item in enumerate(strip_items):
+        lab, ic = item[0], item[1]
+        key = item[2] if len(item) > 2 else None
         ix = ML + 1.55 + k * iw
-        icon(s, ic, on_white(SPOKE_COLORS[k % 6]), ix, cy0 + 0.18, 0.3)
-        tb(s, ix + 0.37, cy0 + 0.06, iw - 0.42, 0.54, lab, size=9.5, bold=True, anchor=MSO_ANCHOR.MIDDLE, line=1.0)
+        if key:
+            lw_ = logo(s, key, ix, cy0 + 0.15, 0.36 if key != "aws" else 0.3)
+        else:
+            icon(s, ic, on_white(SPOKE_COLORS[k % 6]), ix, cy0 + 0.18, 0.3)
+            lw_ = 0.3
+        tb(s, ix + lw_ + 0.1, cy0 + 0.06, iw - lw_ - 0.15, 0.54, lab, size=9.5, bold=True, anchor=MSO_ANCHOR.MIDDLE, line=1.0)
 
 
 def arch_header(s, title, promise, tile_fill, tile_icon, promise_color):
     rect(s, ML, 0.6, 0.62, 0.62, fill=tile_fill, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.2)
     icon(s, tile_icon, ink_on(tile_fill), ML + 0.13, 0.73, 0.36)
-    name_w = len(title) * 28 * 0.53 / 72 + 0.2
+    name_w = len(title) * 28 * 0.6 / 72 + 0.25
     tb(s, ML + 0.8, 0.55, name_w, 0.5, title, size=28, bold=True)
     tb(s, ML + 0.8 + name_w, 0.66, 12.0 - name_w, 0.4, promise, size=18, light=True, color=promise_color)
 
@@ -607,9 +673,9 @@ def engage_slide(d):
     for i, (t, desc) in enumerate(C.ENGAGEMENT_STEPS):
         x = xs[i]
         name, dur = t.split(" · ")
-        top = ly - 1.55 if i % 2 == 0 else ly + 0.2
+        top = ly - 1.8 if i % 2 == 0 else ly + 0.2
         if i % 2 == 0:
-            vline(s, x, ly - 1.55, ly - 0.15, WHITE, 1.25, dash=True)
+            vline(s, x, ly - 1.8, ly - 0.15, WHITE, 1.25, dash=True)
         else:
             vline(s, x, ly + 0.15, ly + 1.55, WHITE, 1.25, dash=True)
         tb(s, x + 0.2, top, 2.85, 0.3, name, size=15, bold=True, color=WHITE)

@@ -50,7 +50,8 @@ UNIVERSAL = {
     "standards": ["FHIR", "ICD-10", "RxNorm", "UDI"],
     "agent_skills": ["Plan the task", "Retrieve facts", "Draft the output", "Check the rules", "Hand off to a person"],
     "outputs": [("Salesforce", "layout-dashboard"), ("Dashboards", "gauge"), ("Ask in plain English", "message-square")],
-    "runs_on": [("Google Cloud", "cloud"), ("AWS", "cloud"), ("Azure", "cloud"), ("Salesforce", "layout-dashboard"), ("Any LLM", "bot")],
+    "runs_on": [("Google Cloud", "cloud", "googlecloud"), ("AWS", "cloud", "aws"), ("Azure", "cloud", "azure"),
+                ("Salesforce", "layout-dashboard", "salesforce"), ("Any LLM", "bot", None)],
 }
 
 GOVERNANCE_LINE = "PHI masking · guardrails in & out · human approval · audit trail"
@@ -60,6 +61,7 @@ PLATFORMS = [
     # ---------------------------------------------------------------- CareGraph
     {
         "name": "CareGraph",
+        "evidence": ("27%", "better patient adherence reported by Salesforce Health Cloud customers", "Salesforce (vendor-reported)"),
         "domain": "Care Engagement",
         "accent": "cyan",
         "icon": "heart-pulse",
@@ -132,6 +134,7 @@ PLATFORMS = [
     # ---------------------------------------------------------------- TherapyGraph
     {
         "name": "TherapyGraph",
+        "evidence": ("Oct 2025", "Salesforce Life Sciences Cloud went GA; Pfizer and Fidia named early adopters, Novartis selected it globally", "Salesforce"),
         "domain": "Life Sciences",
         "accent": "magenta",
         "icon": "flask-conical",
@@ -204,6 +207,7 @@ PLATFORMS = [
     # ---------------------------------------------------------------- RxGraph
     {
         "name": "RxGraph",
+        "evidence": ("22.6K", "free-text medication strings normalized to RxNorm by an LLM-assisted pipeline (RxMap)", "Johns Hopkins (peer-reviewed)"),
         "domain": "Pharmacy & Drug",
         "accent": "yellow",
         "icon": "pill",
@@ -276,6 +280,7 @@ PLATFORMS = [
     # ---------------------------------------------------------------- DeviceGraph
     {
         "name": "DeviceGraph",
+        "evidence": ("4,459", "colonoscopy device reports from FDA MAUDE classified by a GPT-4 pipeline with minimal human annotation", "Peer-reviewed study, IOS Press SHTI"),
         "domain": "Medical Devices & IoT",
         "accent": "purple",
         "icon": "cpu",
@@ -348,6 +353,7 @@ PLATFORMS = [
     # ---------------------------------------------------------------- ChainGraph
     {
         "name": "ChainGraph",
+        "evidence": ("55%", "faster electronic batch-record review in a pharma deployment, with QA keeping final approval", "CannyMinds (vendor-reported)"),
         "domain": "Manufacturing & Supply Chain",
         "accent": "green",
         "icon": "factory",
