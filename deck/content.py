@@ -28,11 +28,11 @@ PROOF_POINT = ("We built a governed agentic delivery platform for a large US hea
                "(Salesforce Health and Marketing Cloud, masked data context, compliance guardian, human approval gates).")
 
 APPROACH_COLUMNS = [
-    ("Data sources", "Public reference data + client systems (EHR, CRM, QMS, devices)", "database"),
-    ("Python ETL", "Load, link, de-identify and embed; runs on any cloud", "workflow"),
-    ("Knowledge graph", "One central entity, connected spokes, vector indexes", "network"),
-    ("Graph assistant", "Specialist agents that plan, cite and hand off to people", "bot"),
-    ("Experience", "Salesforce, dashboards, natural-language Q&A", "layout-dashboard"),
+    ("Data foundation", "Public reference data + client systems (EHR, CRM, QMS, devices)", "database"),
+    ("Data readiness", "Match identities, map to standard codes, mask PHI", "shield-check"),
+    ("Intelligence core", "One central entity with connected spokes: the domain model", "network"),
+    ("Agentic workflows", "Specialist agents that plan, cite and hand off to people", "bot"),
+    ("Experience", "Salesforce, dashboards, plain-English questions", "layout-dashboard"),
 ]
 APPROACH_GOVERNANCE = "Governance built in: guardrails in and out · PHI masking & minimum-data access · human approval gates · evaluation sets · audit trail"
 CLOUDS = ["Google Cloud", "AWS", "Azure", "Salesforce"]
@@ -54,8 +54,8 @@ PLATFORMS = [
         "domain": "Care Engagement",
         "accent": "cyan",
         "icon": "heart-pulse",
-        "tagline": "Care Engagement Intelligence Platform",
-        "subtitle": "Connecting patients, care gaps, providers, access and outreach with a knowledge graph",
+        "promise": "Every patient journey, connected",
+        "subtitle": "From scattered care data to action: one patient-centered model, agents on top, people in control",
         "headline": "Care teams can't see, or act on, the whole patient journey",
         "problem": "Care gaps, scheduling, referrals, costs and outreach sit in separate systems. Health systems run many campaigns "
                    "but can't tell why a gap exists, what works for whom, or whether outreach is fair.",
@@ -83,7 +83,6 @@ PLATFORMS = [
             ("Referrals", "route"), ("Community (SDOH)", "house-heart"), ("Journeys", "megaphone"),
             ("Consent", "shield-check"), ("Costs", "badge-dollar-sign"),
         ],
-        "stats": [("10", "Entity types"), ("18", "Relationships"), ("6", "Vector indexes")],
         "sources": [
             ("EHR / FHIR", "Encounters, problems, care gaps", "hospital"),
             ("CMS quality measures", "eCQM specifications", "file-text"),
@@ -92,19 +91,12 @@ PLATFORMS = [
             ("Price transparency", "Hospital & payer rate files", "badge-dollar-sign"),
             ("Engagement data", "Marketing Cloud, contact center", "message-square"),
         ],
-        "etl": [
-            ("database", ["load_fhir", "load_ecqm"]),
-            ("map-pin", ["load_places", "load_nppes"]),
-            ("badge-dollar-sign", ["ingest_rates", "ingest_engagement"]),
-            ("lock", ["mask_phi", "embed_nodes"]),
-        ],
+        "prepare": [("users", "Match patients & providers"), ("tags", "Map to standard codes"), ("lock", "Mask PHI & apply consent"), ("file-search", "Make documents searchable")],
+        "standards": ["FHIR", "ICD-10", "LOINC", "NPI"],
         "agents": ["Cohort builder", "Gap explainer", "Journey designer", "Access navigator", "Compliance guardian"],
         "outputs": [("Health Cloud console", "layout-dashboard"), ("Marketing Cloud journeys", "megaphone"),
-                    ("Natural-language Q&A", "message-square")],
-        "capabilities": [
-            ("Care-gap closure", "clipboard-check"), ("Personalized journeys", "megaphone"), ("Patient access", "calendar-check"),
-            ("Referral integrity", "route"), ("Equity analytics", "scale"), ("GraphRAG Q&A", "network"), ("Agentic AI", "bot"),
-        ],
+                    ("Ask the graph", "message-square")],
+        "outcomes": [("Care gaps closed", "clipboard-check"), ("Personalized outreach", "megaphone"), ("Visits booked", "calendar-check"), ("Referrals kept", "route"), ("Fair access", "scale"), ("Faster compliant campaigns", "shield-check")],
         "value_headline": "Close more care gaps, book more visits and keep patients in network, with every send compliant.",
         "value_stats": [
             ("↑", "Care-gap closure rate per campaign", "Pilot target"),
@@ -134,8 +126,8 @@ PLATFORMS = [
         "domain": "Life Sciences",
         "accent": "magenta",
         "icon": "flask-conical",
-        "tagline": "Life Sciences Intelligence Platform",
-        "subtitle": "Connecting therapies, HCPs, trials, evidence and content with a knowledge graph",
+        "promise": "One view of every therapy, from trial to market",
+        "subtitle": "From scattered commercial, medical and clinical data to action: one therapy-centered model, agents on top, people in control",
         "headline": "Commercial, medical and clinical teams work from different pictures",
         "problem": "HCP data, trial data, publications and approved content live in separate systems. Brands struggle to personalize "
                    "compliantly, MLR review takes weeks, and trials miss enrollment targets.",
@@ -163,7 +155,6 @@ PLATFORMS = [
             ("Sites & investigators", "hospital"), ("Publications", "book-open"), ("Open Payments", "badge-dollar-sign"),
             ("Content & claims", "megaphone"), ("Patient programs", "users"),
         ],
-        "stats": [("11", "Entity types"), ("20", "Relationships"), ("7", "Vector indexes")],
         "sources": [
             ("NPPES", "HCP identity (NPI)", "stethoscope"),
             ("CMS Open Payments", "Industry payments to HCPs", "badge-dollar-sign"),
@@ -172,20 +163,12 @@ PLATFORMS = [
             ("DailyMed labels", "Approved indications & claims", "file-text"),
             ("PubMed", "Publications & authors", "book-open"),
         ],
-        "etl": [
-            ("database", ["load_nppes", "load_open_payments"]),
-            ("pill", ["load_partd", "load_labels"]),
-            ("flask-conical", ["ingest_trials", "load_pubmed"]),
-            ("network", ["resolve_npi", "embed_nodes"]),
-        ],
+        "prepare": [("users", "Match HCPs across sources (NPI)"), ("tags", "Map trials & labels to standard terms"), ("lock", "Apply consent & opt-outs"), ("file-search", "Make content & publications searchable")],
+        "standards": ["NPI", "NCT ID", "SPL label", "MeSH"],
         "agents": ["Pre-call briefing", "Next-best-action", "MLR pre-review", "Trial feasibility", "Patient matcher"],
         "outputs": [("Life Sciences Cloud console", "layout-dashboard"), ("Marketing Cloud", "megaphone"),
-                    ("Natural-language Q&A", "message-square")],
-        "capabilities": [
-            ("HCP 360", "users"), ("Next-best-action", "target"), ("MLR pre-review", "file-search"),
-            ("Trial feasibility", "flask-conical"), ("Patient recruitment", "user-round"), ("GraphRAG Q&A", "network"),
-            ("Agentic AI", "bot"),
-        ],
+                    ("Ask the graph", "message-square")],
+        "outcomes": [("Richer HCP engagement", "users"), ("Faster MLR approval", "file-search"), ("On-label content", "shield-check"), ("Faster trial enrollment", "flask-conical"), ("Better site selection", "map-pin"), ("Field insight to strategy", "message-square")],
         "value_headline": "More relevant HCP engagement, faster content approval and trials that enroll on time.",
         "value_stats": [
             ("~40%", "less trial screening time with NIH's TrialGPT approach", "NIH, Nature Communications 2024"),
@@ -215,8 +198,8 @@ PLATFORMS = [
         "domain": "Pharmacy & Drug",
         "accent": "yellow",
         "icon": "pill",
-        "tagline": "Pharmacy & Medication Intelligence Platform",
-        "subtitle": "Connecting medications, interactions, coverage, safety and supply with a knowledge graph",
+        "promise": "Every medication decision, grounded",
+        "subtitle": "From scattered drug, coverage and supply data to action: one medication-centered model, agents on top, pharmacists in control",
         "headline": "Medication decisions depend on data scattered across many systems",
         "problem": "Medication lists are messy, interaction alerts are noisy, prior auth is manual, adherence slips and shortages hit "
                    "without warning. General-purpose AI models also miss dangerous interactions.",
@@ -244,7 +227,6 @@ PLATFORMS = [
             ("Pharmaco-genomics", "dna"), ("Formulary & coverage", "scale"), ("Prior-auth criteria", "clipboard-check"),
             ("Adverse events", "siren"), ("NDC & shortages", "package"),
         ],
-        "stats": [("12", "Entity types"), ("22", "Relationships"), ("6", "Vector indexes")],
         "sources": [
             ("RxNorm", "Drug identity (RxCUI)", "pill"),
             ("DailyMed / openFDA", "Labels, indications, warnings", "file-text"),
@@ -253,19 +235,12 @@ PLATFORMS = [
             ("CMS Part D & LCD/NCD", "Formulary & coverage rules", "scale"),
             ("FDA shortages & NDC", "Supply status", "package"),
         ],
-        "etl": [
-            ("database", ["load_rxnorm", "load_labels"]),
-            ("siren", ["ingest_faers", "load_cpic"]),
-            ("scale", ["load_formulary", "load_policies"]),
-            ("package", ["ingest_shortages", "embed_nodes"]),
-        ],
+        "prepare": [("pill", "Normalize drug names to RxNorm"), ("tags", "Link labels, interactions & coverage"), ("lock", "Mask PHI & apply consent"), ("file-search", "Make labels & policies searchable")],
+        "standards": ["RxNorm", "NDC", "ATC", "FHIR"],
         "agents": ["Reconciler", "Interaction checker", "Prior-auth builder", "Adherence coach", "Substitute finder"],
         "outputs": [("Pharmacist worklist", "clipboard-check"), ("Health Cloud / EHR", "layout-dashboard"),
-                    ("Natural-language Q&A", "message-square")],
-        "capabilities": [
-            ("Med reconciliation", "clipboard-check"), ("Interaction safety", "shield-check"), ("Prior auth", "file-text"),
-            ("Adherence", "bell"), ("Adverse events", "siren"), ("Shortage substitution", "package"), ("GraphRAG Q&A", "network"),
-        ],
+                    ("Ask the graph", "message-square")],
+        "outcomes": [("Safer medication lists", "clipboard-check"), ("Interactions caught", "shield-check"), ("Faster prior auth", "file-text"), ("Better adherence", "bell"), ("Adverse events captured", "siren"), ("Shortages managed", "package")],
         "value_headline": "Safer medication lists, faster access to therapy and fewer surprises from shortages.",
         "value_stats": [
             ("4 of 4", "AI models tested missed a known interaction, so answers must be grounded", "ERCSP 2024"),
@@ -295,8 +270,8 @@ PLATFORMS = [
         "domain": "Medical Devices & IoT",
         "accent": "purple",
         "icon": "cpu",
-        "tagline": "Medical Device & IoT Intelligence Platform",
-        "subtitle": "Connecting devices, patients, telemetry, complaints, recalls and security with a knowledge graph",
+        "promise": "Every device, traced from patient to recall",
+        "subtitle": "From scattered device, telemetry and quality data to action: one device-centered model, agents on top, people in control",
         "headline": "Device data is everywhere, but nobody sees the whole picture",
         "problem": "Remote-monitoring readings flood care teams, complaints pile up against tight FDA deadlines, recalls are hard to trace "
                    "to patients, and connected devices carry known vulnerabilities.",
@@ -324,7 +299,6 @@ PLATFORMS = [
             ("Complaints", "message-square"), ("MAUDE events", "siren"), ("Recalls", "triangle-alert"),
             ("510(k) / PMA", "file-text"), ("Vulnera-bilities", "shield-alert"),
         ],
-        "stats": [("12", "Entity types"), ("21", "Relationships"), ("5", "Vector indexes")],
         "sources": [
             ("Device telemetry", "Wearables & home devices (FHIR)", "watch"),
             ("FDA GUDID", "UDI device identity", "database"),
@@ -333,19 +307,12 @@ PLATFORMS = [
             ("CISA ICSMA & NVD", "Device vulnerabilities", "shield-alert"),
             ("Complaints & service", "Service Cloud cases", "message-square"),
         ],
-        "etl": [
-            ("wifi", ["ingest_telemetry", "to_fhir"]),
-            ("database", ["load_gudid", "ingest_maude"]),
-            ("file-text", ["load_recalls", "load_510k"]),
-            ("shield-alert", ["load_cves", "embed_nodes"]),
-        ],
+        "prepare": [("link", "Pair devices to patients (UDI)"), ("activity", "Summarize telemetry daily"), ("tags", "Code events (IMDRF)"), ("file-search", "Make narratives searchable")],
+        "standards": ["UDI", "IMDRF", "FHIR", "CVE"],
         "agents": ["RPM triage", "Complaint intake", "Reportability advisor", "Trend detector", "Patch planner"],
         "outputs": [("Care team console", "layout-dashboard"), ("Quality & regulatory", "clipboard-check"),
-                    ("Natural-language Q&A", "message-square")],
-        "capabilities": [
-            ("Remote monitoring", "activity"), ("Complaint handling", "clipboard-check"), ("FDA reporting", "siren"),
-            ("Recall tracing", "search"), ("Cybersecurity", "shield-check"), ("GraphRAG Q&A", "network"), ("Agentic AI", "bot"),
-        ],
+                    ("Ask the graph", "message-square")],
+        "outcomes": [("Fewer, better alerts", "bell"), ("Faster complaint handling", "clipboard-check"), ("On-time FDA reports", "siren"), ("Recalls traced", "search"), ("Devices secured", "shield-check"), ("RPM revenue captured", "badge-dollar-sign")],
         "value_headline": "Fewer, better alerts, faster complaint handling and devices you can trace and secure.",
         "value_stats": [
             ("2M+", "medical device reports FDA receives each year (MAUDE)", "FDA"),
@@ -375,8 +342,8 @@ PLATFORMS = [
         "domain": "Manufacturing & Supply Chain",
         "accent": "green",
         "icon": "factory",
-        "tagline": "Manufacturing & Supply Chain Intelligence Platform",
-        "subtitle": "Connecting suppliers, plants, batches, quality and distribution with a knowledge graph",
+        "promise": "From supplier to patient, end to end",
+        "subtitle": "From scattered supplier, plant and quality data to action: one product-lot model, agents on top, QA in control",
         "headline": "From supplier to patient, the chain is only visible in pieces",
         "problem": "Supplier risks are hidden, deviation investigations take weeks, repeat findings lead to FDA 483s, and shortages are "
                    "discovered too late to plan around.",
@@ -404,7 +371,6 @@ PLATFORMS = [
             ("Batch records", "test-tube"), ("Deviations & CAPA", "triangle-alert"), ("SOPs & 483s", "scale"),
             ("Distribution", "route"), ("Demand & shortages", "gauge"),
         ],
-        "stats": [("13", "Entity types"), ("24", "Relationships"), ("6", "Vector indexes")],
         "sources": [
             ("ERP & suppliers", "Suppliers, materials, orders", "truck"),
             ("MES / eBMR & LIMS", "Batches, equipment, tests", "factory"),
@@ -413,20 +379,12 @@ PLATFORMS = [
             ("FDA shortages & recalls", "Market supply signals (NDC)", "package"),
             ("DSCSA / distribution", "Serialization & inventory", "route"),
         ],
-        "etl": [
-            ("truck", ["load_erp", "load_suppliers"]),
-            ("factory", ["ingest_mes", "ingest_lims"]),
-            ("clipboard-check", ["load_qms", "load_483s"]),
-            ("package", ["ingest_shortages", "embed_nodes"]),
-        ],
+        "prepare": [("link", "Link supplier → lot → batch"), ("tags", "Map products & facilities (NDC)"), ("shield-check", "Validated, versioned pipelines"), ("file-search", "Make SOPs & investigations searchable")],
+        "standards": ["NDC", "GS1 / DSCSA", "GMP", "ISO 13485"],
         "agents": ["Supplier risk", "Deviation triage", "Root-cause drafter", "CAPA checker", "Shortage early warning"],
         "outputs": [("Quality workbench", "clipboard-check"), ("Supply dashboard", "layout-dashboard"),
-                    ("Natural-language Q&A", "message-square")],
-        "capabilities": [
-            ("Supplier risk", "truck"), ("Deviation & CAPA", "workflow"), ("Batch review", "clipboard-check"),
-            ("Inspection readiness", "file-search"), ("Shortage warning", "package"), ("GraphRAG Q&A", "network"),
-            ("Agentic AI", "bot"),
-        ],
+                    ("Ask the graph", "message-square")],
+        "outcomes": [("Supplier risk visible", "truck"), ("Faster investigations", "search"), ("Fewer repeat deviations", "workflow"), ("Faster batch release", "clipboard-check"), ("Inspection ready", "file-search"), ("Shortages foreseen", "package")],
         "value_headline": "Close investigations faster, stop repeat deviations and see shortages coming, with QA always in control.",
         "value_stats": [
             ("40%", "faster deviation closure reported in industry GenAI case studies", "McKinsey (vendor-reported)"),

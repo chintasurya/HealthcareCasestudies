@@ -311,7 +311,7 @@ def approach_slide(d):
     s = d.slide(bg="bg_dark_glow.jpg")
     d.chrome(s)
     tb(s, ML, 0.7, 12, 0.7, "One pattern, five graphs", size=32, bold=True, color=WHITE)
-    tb(s, ML, 1.45, 12, 0.4, "Every platform: public + client data  →  Python ETL  →  knowledge graph  →  agents  →  the tools people already use",
+    tb(s, ML, 1.45, 12, 0.4, "Every platform: data foundation  →  data readiness  →  intelligence core  →  agentic workflows  →  experience",
        size=15, color=SOFT)
     cols = [CYAN, YELLOW, MAGENTA, PURPLE, WHITE]
     bw, gap, y = 2.25, 0.22, 2.3
@@ -399,7 +399,7 @@ def problem_slide(d, p):
     rect(s, rx, 1.02, 0.62, 0.62, fill=acc, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.2)
     icon(s, p["icon"], ink_on(acc), rx + 0.13, 1.15, 0.36)
     tb(s, rx + 0.8, 0.98, rw - 0.8, 0.5, p["name"], size=30, bold=True, color=WHITE)
-    tb(s, rx + 0.8, 1.48, rw - 0.8, 0.3, p["tagline"], size=12, color=SOFT)
+    tb(s, rx + 0.8, 1.48, rw - 0.8, 0.3, p["promise"], size=12, color=SOFT)
     h = text_h(p["definition"], 14, rw)
     tb(s, rx, 1.95, rw, h, p["definition"], size=14, color=WHITE)
     y = 1.95 + h + 0.28
@@ -420,11 +420,18 @@ def problem_slide(d, p):
     d.notes(s, "PRESIDENT CUT: present this platform.\n\nTalk track: " + p["talk"])
 
 
-def panel(s, x, y, w, h, title, ic, acc):
+def panel(s, x, y, w, h, title, sub, ic, acc):
     rbox(s, x, y, w, h, fill=WHITE, line=SOFT, line_w=1.0, radius=0.04)
-    rect(s, x + 0.02, y + 0.02, w - 0.04, 0.44, fill=LIGHT)
-    icon(s, ic, on_white(acc), x + 0.14, y + 0.1, 0.26)
-    tb(s, x + 0.48, y + 0.02, w - 0.55, 0.44, title, size=12.5, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    rect(s, x + 0.02, y + 0.02, w - 0.04, 0.58, fill=LIGHT)
+    icon(s, ic, on_white(acc), x + 0.14, y + 0.17, 0.28)
+    tb(s, x + 0.5, y + 0.08, w - 0.56, 0.24, title, size=10, bold=True, tracking=0.6)
+    tb(s, x + 0.5, y + 0.33, w - 0.56, 0.22, sub, size=8.5, color=GRAY)
+
+
+ARCH_LAYERS = [("DATA FOUNDATION", "Sources we connect", "database"),
+               ("DATA READINESS", "Matching, masking, codes", "shield-check"),
+               ("INTELLIGENCE CORE", "The {name} model", "network"),
+               ("AGENTIC WORKFLOWS", "Agents + where users see it", "bot")]
 
 
 def arch_slide(d, p):
@@ -432,56 +439,51 @@ def arch_slide(d, p):
     d.chrome(s, label=plabel(p) + " · ARCHITECTURE", dark=False)
     acc = ACCENTS[p["accent"]]
     acc_w = on_white(acc)
-    # header: icon tile + Name / tagline
+    # header: icon tile + name + promise line
     rect(s, ML, 0.6, 0.62, 0.62, fill=acc, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.2)
     icon(s, p["icon"], ink_on(acc), ML + 0.13, 0.73, 0.36)
-    name_w = len(p["name"]) * 28 * 0.6 / 72 + 0.1
+    name_w = len(p["name"]) * 28 * 0.6 / 72 + 0.15
     tb(s, ML + 0.8, 0.55, name_w, 0.5, p["name"], size=28, bold=True)
-    rich(s, ML + 0.8 + name_w, 0.62, 8.5, 0.45, [("/  ", acc_w, True), (p["tagline"], BLACK, True)], size=18)
-    tb(s, ML + 0.8, 1.08, 11, 0.3, p["subtitle"], size=12, color=GRAY)
+    tb(s, ML + 0.8 + name_w, 0.66, 8.0, 0.4, p["promise"], size=18, light=True, color=acc_w)
+    tb(s, ML + 0.8, 1.08, 11.5, 0.3, p["subtitle"], size=12, color=GRAY)
 
     top, ph, gap = 1.55, 4.38, 0.16
-    widths = [2.45, 1.85, 4.05, 3.3]
+    widths = [2.45, 2.07, 3.83, 3.3]
     xs = [ML]
     for wdt in widths[:-1]:
         xs.append(xs[-1] + wdt + gap)
-    titles = [("Data sources", "database"), ("Python ETL", "code"), ("Knowledge graph", "network"),
-              ("Read & intelligence layer", "sparkles")]
-    for i, ((t, ic), x, wdt) in enumerate(zip(titles, xs, widths)):
-        panel(s, x, top, wdt, ph, t, ic, acc)
+    for i, ((t, sub, ic), x, wdt) in enumerate(zip(ARCH_LAYERS, xs, widths)):
+        panel(s, x, top, wdt, ph, t, sub.format(name=p["name"]), ic, acc)
         if i < 3:
             tri_right(s, x + wdt + 0.035, top + ph / 2 - 0.09, GRAY)
 
-    # 1. data sources
+    # 1. data foundation
     x, wdt = xs[0], widths[0]
-    y = top + 0.58
-    for name, desc, ic in p["sources"]:
-        rbox(s, x + 0.12, y, wdt - 0.24, 0.58)
-        icon(s, ic, on_white(SPOKE_COLORS[p["sources"].index((name, desc, ic)) % 6]), x + 0.22, y + 0.14, 0.3)
-        tb(s, x + 0.62, y + 0.06, wdt - 0.8, 0.24, name, size=9.5, bold=True)
-        tb(s, x + 0.62, y + 0.29, wdt - 0.8, 0.28, desc, size=8.5, color=GRAY, line=1.0)
-        y += 0.63
+    y = top + 0.72
+    for k, (name, desc, ic) in enumerate(p["sources"]):
+        rbox(s, x + 0.12, y, wdt - 0.24, 0.55)
+        icon(s, ic, on_white(SPOKE_COLORS[k % 6]), x + 0.22, y + 0.13, 0.29)
+        tb(s, x + 0.62, y + 0.05, wdt - 0.8, 0.24, name, size=9.5, bold=True)
+        tb(s, x + 0.62, y + 0.27, wdt - 0.8, 0.28, desc, size=8.5, color=GRAY, line=1.0)
+        y += 0.6
 
-    # 2. ETL
+    # 2. data readiness: plain-English steps
     x, wdt = xs[1], widths[1]
-    y = top + 0.62
-    for k, (ic, fns) in enumerate(p["etl"]):
-        rbox(s, x + 0.12, y, wdt - 0.24, 0.84)
+    y = top + 0.74
+    for k, (ic, step) in enumerate(p["prepare"]):
+        rbox(s, x + 0.12, y, wdt - 0.24, 0.8)
         icon(s, ic, on_white(SPOKE_COLORS[k]), x + wdt / 2 - 0.14, y + 0.08, 0.28)
-        tb(s, x + 0.14, y + 0.4, wdt - 0.28, 0.42, fns, size=9.5, color=BLACK, align=PP_ALIGN.CENTER, line=1.0)
-        y += 0.96
+        tb(s, x + 0.16, y + 0.4, wdt - 0.32, 0.38, step, size=9, bold=True, align=PP_ALIGN.CENTER, line=1.0)
+        y += 0.9
 
-    # 3. knowledge graph: stats + hub and spoke
+    # 3. intelligence core: standards chips + hub and spoke
     x, wdt = xs[2], widths[2]
-    sw = (wdt - 0.24 - 0.2) / 3
-    for k, ((val, lab), ic) in enumerate(zip(p["stats"], ["boxes", "link", "database"])):
-        sx = x + 0.12 + k * (sw + 0.1)
-        rbox(s, sx, top + 0.58, sw, 0.55)
-        icon(s, ic, acc_w, sx + 0.08, top + 0.74, 0.22)
-        tb(s, sx + 0.36, top + 0.6, sw - 0.38, 0.3, val, size=15, bold=True)
-        tb(s, sx + 0.36, top + 0.86, sw - 0.38, 0.25, lab, size=8, color=GRAY)
-    cx, cy = x + wdt / 2, top + 1.2 + (ph - 1.2) / 2
-    rx_, ry_, sd, cd = 1.45, 1.1, 0.84, 1.08
+    tb(s, x + 0.14, top + 0.72, 0.85, 0.3, "Standards", size=8.5, color=GRAY, anchor=MSO_ANCHOR.MIDDLE)
+    cxp = x + 0.95
+    for st in p["standards"]:
+        cxp = pill(s, cxp, top + 0.72, st, acc_w if isinstance(acc_w, RGBColor) else _rgb(acc_w), size=8.5, h=0.28) - 0.04
+    cx, cy = x + wdt / 2, top + 1.12 + (ph - 1.12) / 2
+    rx_, ry_, sd, cd = 1.38, 1.08, 0.84, 1.08
     pos = []
     for k in range(8):
         a = math.radians(-90 + k * 45)
@@ -498,56 +500,59 @@ def arch_slide(d, p):
         icon(s, ic, on_white(col), px - 0.13, py - 0.33, 0.26)
         tb(s, px - sd / 2 + 0.05, py - 0.04, sd - 0.1, 0.36, lab, size=7.5, bold=True, align=PP_ALIGN.CENTER, line=0.95)
 
-    # 4. read & intelligence layer
+    # 4. agentic workflows
     x, wdt = xs[3], widths[3]
     lx, lwid = x + 0.12, 1.74
     ox, owid = x + wdt - 0.12 - 1.18, 1.18
-    y0 = top + 0.58
-    rbox(s, lx, y0, lwid, 0.66)
-    icon(s, "code", acc_w, lx + 0.1, y0 + 0.17, 0.3)
-    tb(s, lx + 0.48, y0 + 0.08, lwid - 0.52, 0.26, "Graph API", size=10.5, bold=True)
-    tb(s, lx + 0.48, y0 + 0.34, lwid - 0.52, 0.28, "REST · GraphQL · MCP", size=8.5, color=GRAY)
-    ay = y0 + 0.8
-    ah = 2.12
+    y0 = top + 0.72
+    rbox(s, lx, y0, lwid, 0.62)
+    icon(s, "lock", acc_w, lx + 0.1, y0 + 0.16, 0.28)
+    tb(s, lx + 0.46, y0 + 0.07, lwid - 0.5, 0.26, "Secure access", size=10, bold=True)
+    tb(s, lx + 0.46, y0 + 0.32, lwid - 0.5, 0.26, "APIs · MCP tools", size=8.5, color=GRAY)
+    ay = y0 + 0.74
+    ah = 2.05
     rbox(s, lx, ay, lwid, ah, line=acc, line_w=1.5)
-    icon(s, "bot", acc_w, lx + 0.1, ay + 0.12, 0.32)
-    tb(s, lx + 0.5, ay + 0.08, lwid - 0.52, 0.26, "Graph Assistant", size=10, bold=True)
-    tb(s, lx + 0.5, ay + 0.33, lwid - 0.55, 0.26, "agents · any LLM", size=8.5, color=GRAY)
-    yy = ay + 0.7
+    icon(s, "bot", acc_w, lx + 0.1, ay + 0.12, 0.3)
+    tb(s, lx + 0.46, ay + 0.08, lwid - 0.5, 0.26, "AI agent crew", size=10, bold=True)
+    tb(s, lx + 0.46, ay + 0.32, lwid - 0.5, 0.26, "model-agnostic", size=8.5, color=GRAY)
+    yy = ay + 0.68
     for ag in p["agents"]:
         oval(s, lx + 0.16, yy + 0.07, 0.07, fill=acc if acc not in (YELLOW,) else ORANGE)
         tb(s, lx + 0.32, yy, lwid - 0.38, 0.26, ag, size=9)
-        yy += 0.27
-    gy = ay + ah + 0.12
-    rbox(s, lx, gy, lwid, 0.62, line=YELLOW, line_w=1.5)
-    icon(s, "shield-check", on_white(YELLOW), lx + 0.1, gy + 0.16, 0.28)
-    tb(s, lx + 0.45, gy + 0.06, lwid - 0.5, 0.52, C.GOVERNANCE_LINE, size=7.5, color=BLACK, anchor=MSO_ANCHOR.MIDDLE, line=1.0)
-    oh, og = 1.0, 0.3
-    oy = y0 + 0.25
+        yy += 0.26
+    gy = ay + ah + 0.1
+    rbox(s, lx, gy, lwid, 0.66, line=YELLOW, line_w=1.5)
+    icon(s, "shield-check", on_white(YELLOW), lx + 0.1, gy + 0.18, 0.28)
+    tb(s, lx + 0.45, gy + 0.05, lwid - 0.5, 0.2, "Trust layer", size=8.5, bold=True)
+    tb(s, lx + 0.45, gy + 0.24, lwid - 0.5, 0.4, C.GOVERNANCE_LINE, size=7.5, color=GRAY, line=1.0)
+    oh, og = 0.98, 0.26
+    oy = y0 + 0.2
     for k, (lab, ic) in enumerate(p["outputs"]):
+        lab = f"Ask {p['name']}" if lab == "Ask the graph" else lab
         by = oy + k * (oh + og)
         rbox(s, ox, by, owid, oh)
         icon(s, ic, on_white(SPOKE_COLORS[k]), ox + owid / 2 - 0.16, by + 0.1, 0.32)
-        tb(s, ox + 0.06, by + 0.48, owid - 0.12, 0.48, lab, size=9, bold=True, align=PP_ALIGN.CENTER, line=1.0)
+        tb(s, ox + 0.06, by + 0.48, owid - 0.12, 0.46, lab, size=9, bold=True, align=PP_ALIGN.CENTER, line=1.0)
         connector(s, lx + lwid, ay + 0.45 + k * 0.6, ox, by + oh / 2, GRAY, 1.0, arrow=True)
 
-    # capabilities strip
+    # outcomes strip
     cy0 = top + ph + 0.15
     rect(s, ML, cy0, W - 2 * ML, 0.66, fill=LIGHT, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.18)
-    rect(s, ML + 0.08, cy0 + 0.08, 1.55, 0.5, fill=BLACK, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.3)
-    tb(s, ML + 0.08, cy0 + 0.08, 1.55, 0.5, "Key capabilities", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
+    rect(s, ML + 0.08, cy0 + 0.08, 1.3, 0.5, fill=BLACK, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.3)
+    tb(s, ML + 0.08, cy0 + 0.08, 1.3, 0.5, "Outcomes", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER,
        anchor=MSO_ANCHOR.MIDDLE)
-    iw = (W - 2 * ML - 1.8) / len(p["capabilities"])
-    for k, (lab, ic) in enumerate(p["capabilities"]):
-        ix = ML + 1.78 + k * iw
+    iw = (W - 2 * ML - 1.55) / len(p["outcomes"])
+    for k, (lab, ic) in enumerate(p["outcomes"]):
+        ix = ML + 1.55 + k * iw
         icon(s, ic, on_white(SPOKE_COLORS[k % 6]), ix, cy0 + 0.18, 0.3)
         tb(s, ix + 0.37, cy0 + 0.06, iw - 0.42, 0.54, lab, size=9.5, bold=True, anchor=MSO_ANCHOR.MIDDLE, line=1.0)
 
-    d.notes(s, f"Walk left to right. Data sources: public reference data plus the client's systems. Python ETL loads, links and "
-               f"de-identifies them (runs on any cloud). The knowledge graph puts {p['center'][0]} at the center and connects every related "
-               f"entity, with vector indexes for documents, so answers are grounded and cited. The Graph Assistant's agents read the graph "
-               f"and deliver into Salesforce, dashboards and natural-language Q&A. A person approves anything that matters. "
-               f"Graph stats are design counts for the ideation stage.")
+    d.notes(s, f"Walk left to right through the four layers. Data foundation: public reference data plus the client's own systems. "
+               f"Data readiness: we match identities, map everything to standard codes, mask PHI and make documents searchable. "
+               f"Intelligence core: the {p['name']} model puts {p['center'][0]} at the center and connects every related entity, so "
+               f"answers are grounded and cited. Agentic workflows: a crew of specialist agents works through secure access and delivers "
+               f"into Salesforce, dashboards and plain-English questions. The trust layer means a person approves anything that matters. "
+               f"The outcomes strip is what the client gets.")
 
 
 def value_slide(d, p):
@@ -640,22 +645,27 @@ def thankyou_slide(d):
     d.notes(s, "Thank you. Next step: agree which client and which graph to take into an ideation workshop first.")
 
 
-def build():
+def build(out=OUT, only=None):
+    """only: a platform name -> preview build with just the approach slide and that platform's 3 slides."""
     MISSING_ICONS.clear()
     d = Deck()
-    title_slide(d)
-    agenda_slide(d)
-    who_slide(d)
+    platforms = [p for p in C.PLATFORMS if only is None or p["name"].lower() == only.lower()]
+    if only is None:
+        title_slide(d)
+        agenda_slide(d)
+        who_slide(d)
     approach_slide(d)
-    five_graphs_slide(d)
-    for p in C.PLATFORMS:
+    if only is None:
+        five_graphs_slide(d)
+    for p in platforms:
         problem_slide(d, p)
         arch_slide(d, p)
         value_slide(d, p)
-    engage_slide(d)
-    cheatsheet_slide(d)
-    thankyou_slide(d)
-    d.prs.save(OUT)
+    if only is None:
+        engage_slide(d)
+        cheatsheet_slide(d)
+        thankyou_slide(d)
+    d.prs.save(out)
     return d.n
 
 
@@ -670,12 +680,14 @@ def render_icons(icon_dir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--icons", help="path to lucide-static/icons (renders any missing icons)")
+    ap.add_argument("--only", help="preview: build only one platform (e.g. CareGraph) plus the approach slide")
+    ap.add_argument("--out", default=str(OUT), help="output .pptx path")
     args = ap.parse_args()
-    n = build()
+    n = build(args.out, args.only)
     if MISSING_ICONS:
         if not args.icons:
             raise SystemExit(f"{len(MISSING_ICONS)} icons missing; rerun with --icons <lucide-static/icons>")
         render_icons(args.icons)
-        n = build()
+        n = build(args.out, args.only)
         assert not MISSING_ICONS, MISSING_ICONS
-    print(f"wrote {OUT} ({n} slides)")
+    print(f"wrote {args.out} ({n} slides)")
