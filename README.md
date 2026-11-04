@@ -26,12 +26,15 @@ to run on any cloud.
 
 ## Capabilities deck (Insight Global template)
 
-- **Deck:** [`deck/IG_Healthcare_AI_Case_Studies.pptx`](deck/IG_Healthcare_AI_Case_Studies.pptx) (44 slides, speaker notes with talk track and discovery questions)
+- **Deck:** [`deck/IG_Healthcare_AI_Case_Studies.pptx`](deck/IG_Healthcare_AI_Case_Studies.pptx) (23 slides, speaker notes with talk track and discovery questions)
 - **Preview:** [`deck/IG_Healthcare_AI_Case_Studies_preview.pdf`](deck/IG_Healthcare_AI_Case_Studies_preview.pdf) (rendered with a substitute font; the .pptx uses Trenda IG Text)
-- 5 domain sections × 2 case studies, each in 3 slides: problem & solution → high-level architecture → value & benefits
+- Five knowledge-graph platforms, one per domain, each in 3 slides (problem & solution → architecture → value):
+  **CareGraph** (Care Engagement), **TherapyGraph** (Life Sciences), **RxGraph** (Pharmacy & Drug),
+  **DeviceGraph** (Medical Devices & IoT), **ChainGraph** (Manufacturing & Supply Chain)
+- Icons: [Lucide](https://lucide.dev) (ISC license), rendered to PNG in `deck/assets/icons/`
 - Edit copy in `deck/content.py`, then rebuild:
 
 ```bash
 python3 deck/extract_assets.py /path/to/PowerPoint_Template.pdf
-python3 deck/build_deck.py
+python3 deck/build_deck.py --icons /path/to/node_modules/lucide-static/icons
 ```

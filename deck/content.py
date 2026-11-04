@@ -1,8 +1,9 @@
-"""Slide content for the Insight Global Healthcare AI case-study deck.
+"""Slide content for the Insight Global healthcare graph-platform deck.
 
-All copy lives here so it can be edited without touching layout code.
-Value figures are either sourced industry evidence (source given) or a
-pilot target, labelled as such. No invented results.
+Five platforms, one per domain. Each one is a knowledge graph built around a central
+entity, with agents on top, and solves the whole set of problems in its domain.
+Value figures are either sourced public evidence (source given) or a pilot target,
+labelled as such. Graph stats are design counts, not data volumes.
 """
 
 DECK_LABEL = "HEALTHCARE AI CASE STUDIES"
@@ -23,601 +24,430 @@ CAPABILITIES = [
      "Ideation workshops, architecture, proof of concept to production, change management."),
 ]
 
-PROOF_POINT = ("Proof point: We built a governed agentic delivery platform for a large US health system "
+PROOF_POINT = ("We built a governed agentic delivery platform for a large US health system "
                "(Salesforce Health and Marketing Cloud, masked data context, compliance guardian, human approval gates).")
 
 APPROACH_COLUMNS = [
-    ("Data sources", "Public reference data + client systems (EHR, CRM, QMS, devices)"),
-    ("Ingest & govern", "ETL, de-identification, masking, consent, data quality"),
-    ("Knowledge layer", "Knowledge graph + vector search + masked analytics"),
-    ("AI agents", "Specialist agents that plan, cite and hand off to people"),
-    ("Experience", "Salesforce, portals, Tableau, existing workflows"),
+    ("Data sources", "Public reference data + client systems (EHR, CRM, QMS, devices)", "database"),
+    ("Python ETL", "Load, link, de-identify and embed; runs on any cloud", "workflow"),
+    ("Knowledge graph", "One central entity, connected spokes, vector indexes", "network"),
+    ("Graph assistant", "Specialist agents that plan, cite and hand off to people", "bot"),
+    ("Experience", "Salesforce, dashboards, natural-language Q&A", "layout-dashboard"),
 ]
-APPROACH_GOVERNANCE = "Governance built in: guardrails in and out · minimum-data access · human approval gates · evaluation sets · full audit trail"
+APPROACH_GOVERNANCE = "Governance built in: guardrails in and out · PHI masking & minimum-data access · human approval gates · evaluation sets · audit trail"
 CLOUDS = ["Google Cloud", "AWS", "Azure", "Salesforce"]
 
 ENGAGEMENT_STEPS = [
-    ("Ideation workshop · 2 weeks", "Pick the use case, map data and stakeholders, agree success metrics."),
-    ("Proof of concept · 6–8 weeks", "Working agents on public and synthetic data, HLD signed off, demo to sponsors."),
+    ("Ideation workshop · 2 weeks", "Pick the graph and first modules, map data and stakeholders, agree success metrics."),
+    ("Proof of concept · 6–8 weeks", "Working graph and agents on public and synthetic data, architecture signed off, sponsor demo."),
     ("Pilot · ~3 months", "Real users, governed client data, measured against the agreed KPIs."),
-    ("Scale · ongoing", "Roll out across sites and brands, add the next domain on the same platform."),
+    ("Scale · ongoing", "Add modules and sites, then the next graph on the same platform."),
 ]
 
+GOVERNANCE_LINE = "PHI masking · guardrails in & out · human approval · audit trail"
+
 # --------------------------------------------------------------------------------------
-# Sections and case studies
-# --------------------------------------------------------------------------------------
-SECTIONS = [
+PLATFORMS = [
+    # ---------------------------------------------------------------- CareGraph
     {
-        "num": "01",
-        "title": "Care Engagement",
-        "bg": "bg_section_navy.png",
+        "name": "CareGraph",
+        "domain": "Care Engagement",
         "accent": "cyan",
-        "stage": "Engage & deliver care",
-        "buyers": "Health systems, provider groups, health plans",
-        "trigger": "Care gaps, low screening rates, no-shows, outreach that doesn't convert, patient leakage",
-        "who": "CMO / CNO, VP Population Health, Patient Access, Marketing",
-        "cases": [
-            {
-                "title": "Intelligent care-gap closure & patient journeys",
-                "short": "Care-gap closure & journeys",
-                "problem": "Health systems run many outreach campaigns but can't see why a group of patients has a care gap, "
-                           "which intervention works for whom, or whether outreach is fair across communities.",
-                "who": "Population health, care coordination, marketing ops, quality teams",
-                "pains": [
-                    "Care gaps and outreach live in separate systems",
-                    "Same message to everyone, so low conversion and opt-outs",
-                    "Privacy rules slow every new campaign",
-                ],
-                "facts": [
-                    ("27%", "better patient adherence reported by Salesforce Health Cloud customers", "Salesforce (vendor-reported)"),
-                ],
-                "solution": [
-                    "Cohort agent builds patient groups from plain-English questions and returns masked counts, never raw patient data",
-                    "Gap explainer links quality measures, social drivers of health and access to explain each gap",
-                    "Journey designer drafts personalized Marketing Cloud journeys by channel, timing and content",
-                    "Compliance guardian checks consent, HIPAA and TCPA rules before anything is sent",
-                ],
-                "built_on": ["Health Cloud", "Marketing Cloud", "Data Cloud", "Tableau"],
-                "hld": {
-                    "sources": ["EHR care gaps & claims", "CMS quality measures", "CDC PLACES / SDOH", "Provider directory (NPPES)", "Engagement history"],
-                    "ingest": ["FHIR & claims ETL", "PHI masking", "Consent & preferences", "Identity resolution"],
-                    "knowledge": ["Knowledge graph: patient cohort · gap · measure · intervention · channel", "Vector index: measure specs, content", "Masked aggregates"],
-                    "agents": ["Cohort builder", "Gap explainer", "Journey designer", "Compliance guardian", "Outcome evaluator"],
-                    "experience": ["Health Cloud care programs", "Marketing Cloud journeys", "Tableau pre-send review"],
-                },
-                "value_headline": "Close more care gaps, with outreach that's personal, fair and compliant.",
-                "stats": [
-                    ("↑", "Gap-closure rate per campaign", "Pilot target"),
-                    ("↓", "Days to launch a compliant campaign", "Pilot target"),
-                    ("29%", "faster case resolution reported with Health Cloud", "Salesforce (vendor-reported)"),
-                    ("100%", "of sends checked for consent and PHI before release", "Design guarantee"),
-                ],
-                "benefits": {
-                    "Business": "Quality-measure revenue, fewer no-shows, better retention",
-                    "Clinical": "Earlier screening and chronic-care follow-up",
-                    "IT & data": "One governed data layer reused across campaigns",
-                    "Compliance": "Minimum-data access, every send auditable",
-                },
-                "notes": {
-                    "cut": True,
-                    "talk": "This is closest to what our core team already delivers for a large US health system. "
-                            "The point to land: agents work on masked aggregates, so marketing and population health can move fast without touching raw patient data.",
-                    "questions": [
-                        "How many outreach campaigns do you run a year, and how do you measure gap closure?",
-                        "Which quality programs (HEDIS, Stars, value-based contracts) drive your priorities?",
-                        "How long does privacy or compliance review take for a new campaign today?",
-                    ],
-                },
-            },
-            {
-                "title": "Patient access & financial navigation agent",
-                "short": "Access & financial navigation",
-                "problem": "Patients drop out when they can't find the right provider, an open slot or a price they understand. "
-                           "Price-transparency files are public but nearly impossible for patients to use.",
-                "who": "Patient access centers, revenue cycle, digital front door teams",
-                "pains": [
-                    "Long call-center queues for simple scheduling and price questions",
-                    "Estimates are slow, inconsistent or missing",
-                    "Patients book outside the network",
-                ],
-                "facts": [
-                    ("Since 2021", "US hospitals must publish machine-readable price files (CMS price transparency rule)", "CMS"),
-                ],
-                "solution": [
-                    "Care navigator matches a symptom or service to the right in-network provider and open slot",
-                    "Price estimator combines price-transparency files and plan rates into a plain-language estimate",
-                    "Financial-assistance screener checks eligibility and starts the application",
-                    "Agent hands complex cases to a human with the full context",
-                ],
-                "built_on": ["Health Cloud", "Experience Cloud", "Agentforce", "MuleSoft"],
-                "hld": {
-                    "sources": ["Scheduling system", "Hospital price files", "Payer rate files", "Provider directory", "Charity-care policy"],
-                    "ingest": ["Rate-file parsing", "Code mapping (CPT / HCPCS)", "Network & plan rules", "Patient identity"],
-                    "knowledge": ["Knowledge graph: service · code · provider · plan · location · rate", "Vector index: policies, FAQs", "Availability cache"],
-                    "agents": ["Care navigator", "Price estimator", "Assistance screener", "Scheduling agent", "Human handoff"],
-                    "experience": ["Patient portal & mobile", "Contact-center console", "SMS / chat"],
-                },
-                "value_headline": "Turn the digital front door into booked, in-network, financially clear visits.",
-                "stats": [
-                    ("↑", "Online booking conversion", "Pilot target"),
-                    ("↓", "Calls per booked appointment", "Pilot target"),
-                    ("↑", "In-network referrals kept", "Pilot target"),
-                    ("24/7", "self-service scheduling and estimates", "Design capability"),
-                ],
-                "benefits": {
-                    "Business": "More booked visits, less leakage, lower call volume",
-                    "Clinical": "Patients reach the right care faster",
-                    "IT & data": "Reuses directory and scheduling data already in place",
-                    "Compliance": "Supports price-transparency and No Surprises Act goals",
-                },
-                "notes": {
-                    "cut": False,
-                    "talk": "A practical, fast-ROI use case. Most systems already have the data; what's missing is an agent that joins it up for the patient.",
-                    "questions": [
-                        "What share of appointments are booked online versus by phone?",
-                        "How do patients get cost estimates today, and how accurate are they?",
-                        "Do you track network leakage by service line?",
-                    ],
-                },
-            },
+        "icon": "heart-pulse",
+        "tagline": "Care Engagement Intelligence Platform",
+        "subtitle": "Connecting patients, care gaps, providers, access and outreach with a knowledge graph",
+        "headline": "Care teams can't see, or act on, the whole patient journey",
+        "problem": "Care gaps, scheduling, referrals, costs and outreach sit in separate systems. Health systems run many campaigns "
+                   "but can't tell why a gap exists, what works for whom, or whether outreach is fair.",
+        "who": "Population health, patient access, care coordination, marketing, quality",
+        "problems": [
+            ("clipboard-check", "Care gaps stay open", "Screenings and chronic-care follow-ups are missed"),
+            ("megaphone", "One-size-fits-all outreach", "Low conversion and high opt-outs"),
+            ("calendar-check", "Hard to get an appointment", "Long queues and abandoned scheduling"),
+            ("route", "Referral leakage", "Patients leave the network"),
+            ("badge-dollar-sign", "Cost confusion", "No clear estimates or financial help"),
+            ("lock", "Privacy slows everything", "Each campaign waits on compliance review"),
         ],
+        "definition": "One knowledge graph of the patient journey, with agents that find gaps, design outreach and book care, using masked data.",
+        "modules": [
+            ("Cohort & gap intelligence", "explains every gap by measure, community and access"),
+            ("Journey designer", "personalized Marketing Cloud journeys"),
+            ("Access navigator", "right provider, right slot, clear estimate"),
+            ("Referral integrity", "keeps referrals in network"),
+            ("Compliance guardian", "consent, HIPAA and TCPA checked before send"),
+        ],
+        "built_on": ["Health Cloud", "Marketing Cloud", "Data Cloud", "Agentforce", "Tableau"],
+        "center": ("Patient", "user-round"),
+        "spokes": [
+            ("Care gaps", "clipboard-check"), ("Providers", "stethoscope"), ("Appointments", "calendar-check"),
+            ("Referrals", "route"), ("Community (SDOH)", "house-heart"), ("Journeys", "megaphone"),
+            ("Consent", "shield-check"), ("Costs", "badge-dollar-sign"),
+        ],
+        "stats": [("10", "Entity types"), ("18", "Relationships"), ("6", "Vector indexes")],
+        "sources": [
+            ("EHR / FHIR", "Encounters, problems, care gaps", "hospital"),
+            ("CMS quality measures", "eCQM specifications", "file-text"),
+            ("CDC PLACES + SDOH", "Community health by census tract", "map-pin"),
+            ("NPPES", "Provider identity (NPI)", "stethoscope"),
+            ("Price transparency", "Hospital & payer rate files", "badge-dollar-sign"),
+            ("Engagement data", "Marketing Cloud, contact center", "message-square"),
+        ],
+        "etl": [
+            ("database", ["load_fhir", "load_ecqm"]),
+            ("map-pin", ["load_places", "load_nppes"]),
+            ("badge-dollar-sign", ["ingest_rates", "ingest_engagement"]),
+            ("lock", ["mask_phi", "embed_nodes"]),
+        ],
+        "agents": ["Cohort builder", "Gap explainer", "Journey designer", "Access navigator", "Compliance guardian"],
+        "outputs": [("Health Cloud console", "layout-dashboard"), ("Marketing Cloud journeys", "megaphone"),
+                    ("Natural-language Q&A", "message-square")],
+        "capabilities": [
+            ("Care-gap closure", "clipboard-check"), ("Personalized journeys", "megaphone"), ("Patient access", "calendar-check"),
+            ("Referral integrity", "route"), ("Equity analytics", "scale"), ("GraphRAG Q&A", "network"), ("Agentic AI", "bot"),
+        ],
+        "value_headline": "Close more care gaps, book more visits and keep patients in network, with every send compliant.",
+        "value_stats": [
+            ("↑", "Care-gap closure rate per campaign", "Pilot target"),
+            ("↓", "Calls per booked appointment", "Pilot target"),
+            ("29%", "faster case resolution reported with Health Cloud", "Salesforce (vendor-reported)"),
+            ("100%", "of outreach checked for consent and PHI before send", "Design guarantee"),
+        ],
+        "benefits": {
+            "Business": "Quality-program revenue, more booked visits, less leakage",
+            "Clinical": "Earlier screening and chronic-care follow-up",
+            "IT & data": "One governed patient graph reused by every team",
+            "Compliance": "Minimum-data access; every send auditable",
+        },
+        "talk": "Closest to what our core team already delivers for a large US health system. Land the point that agents work on masked "
+                "aggregates, so marketing, access and population health move fast without touching raw patient data.",
+        "questions": [
+            "How do you measure care-gap closure today, and which quality programs drive it?",
+            "What share of appointments are booked online versus by phone?",
+            "How long does compliance review take for a new campaign?",
+        ],
+        "trigger": "Care gaps, low screening rates, no-shows, outreach that doesn't convert, network leakage, price questions",
+        "who_to_talk": "CMO / CNO, VP Population Health, Patient Access, Marketing",
     },
+    # ---------------------------------------------------------------- TherapyGraph
     {
-        "num": "02",
-        "title": "Life Sciences",
-        "bg": "bg_section_magenta.png",
+        "name": "TherapyGraph",
+        "domain": "Life Sciences",
         "accent": "magenta",
-        "stage": "Develop & commercialize",
-        "buyers": "Pharma, biotech, CROs, academic medical centers",
+        "icon": "flask-conical",
+        "tagline": "Life Sciences Intelligence Platform",
+        "subtitle": "Connecting therapies, HCPs, trials, evidence and content with a knowledge graph",
+        "headline": "Commercial, medical and clinical teams work from different pictures",
+        "problem": "HCP data, trial data, publications and approved content live in separate systems. Brands struggle to personalize "
+                   "compliantly, MLR review takes weeks, and trials miss enrollment targets.",
+        "who": "Brand and omnichannel teams, Medical Affairs, MLR, Clinical Operations",
+        "problems": [
+            ("users", "Fragmented HCP view", "CRM, claims and public data never meet"),
+            ("file-search", "Slow MLR review", "Every asset waits weeks for approval"),
+            ("shield-alert", "Off-label risk", "Claims drift from the approved label"),
+            ("flask-conical", "Trial enrollment delays", "Criteria are free text; screening is manual"),
+            ("map-pin", "Site selection by gut feel", "Not grounded in patient data"),
+            ("message-square", "Field insights get lost", "MSL notes never reach strategy"),
+        ],
+        "definition": "One graph of each therapy's world (HCPs, evidence, trials and content) with agents for engagement, review and recruitment.",
+        "modules": [
+            ("HCP 360 & next-best-action", "channel, content and timing per HCP"),
+            ("MLR pre-review", "flags off-label claims before human review"),
+            ("Trial feasibility & sites", "masked patient counts by site and region"),
+            ("Patient matching & recruitment", "every criterion explained, consent-aware outreach"),
+            ("Medical-affairs insight", "summarizes field and literature signals"),
+        ],
+        "built_on": ["Life Sciences Cloud", "Marketing Cloud", "Data Cloud", "Agentforce"],
+        "center": ("Therapy", "pill"),
+        "spokes": [
+            ("HCPs", "stethoscope"), ("Label & indications", "file-text"), ("Clinical trials", "flask-conical"),
+            ("Sites & investigators", "hospital"), ("Publications", "book-open"), ("Open Payments", "badge-dollar-sign"),
+            ("Content & claims", "megaphone"), ("Patient programs", "users"),
+        ],
+        "stats": [("11", "Entity types"), ("20", "Relationships"), ("7", "Vector indexes")],
+        "sources": [
+            ("NPPES", "HCP identity (NPI)", "stethoscope"),
+            ("CMS Open Payments", "Industry payments to HCPs", "badge-dollar-sign"),
+            ("Medicare Part D", "Prescribing by NPI and drug", "pill"),
+            ("ClinicalTrials.gov", "Trials, criteria, sites", "flask-conical"),
+            ("DailyMed labels", "Approved indications & claims", "file-text"),
+            ("PubMed", "Publications & authors", "book-open"),
+        ],
+        "etl": [
+            ("database", ["load_nppes", "load_open_payments"]),
+            ("pill", ["load_partd", "load_labels"]),
+            ("flask-conical", ["ingest_trials", "load_pubmed"]),
+            ("network", ["resolve_npi", "embed_nodes"]),
+        ],
+        "agents": ["Pre-call briefing", "Next-best-action", "MLR pre-review", "Trial feasibility", "Patient matcher"],
+        "outputs": [("Life Sciences Cloud console", "layout-dashboard"), ("Marketing Cloud", "megaphone"),
+                    ("Natural-language Q&A", "message-square")],
+        "capabilities": [
+            ("HCP 360", "users"), ("Next-best-action", "target"), ("MLR pre-review", "file-search"),
+            ("Trial feasibility", "flask-conical"), ("Patient recruitment", "user-round"), ("GraphRAG Q&A", "network"),
+            ("Agentic AI", "bot"),
+        ],
+        "value_headline": "More relevant HCP engagement, faster content approval and trials that enroll on time.",
+        "value_stats": [
+            ("~40%", "less trial screening time with NIH's TrialGPT approach", "NIH, Nature Communications 2024"),
+            ("↓", "MLR cycle time per asset", "Pilot target"),
+            ("↑", "HCP engagement rate", "Pilot target"),
+            ("$14.67B", "in HCP payments in CMS Open Payments (PY2025), linkable by NPI", "CMS via IntuitionLabs"),
+        ],
+        "benefits": {
+            "Business": "Faster launches, rep productivity, shorter trials",
+            "Clinical": "Accurate, on-label information; more patients reach trials",
+            "IT & data": "One therapy graph shared by commercial, medical and clinical",
+            "Compliance": "Sunshine Act and PhRMA Code guardrails built in",
+        },
+        "talk": "Salesforce Life Sciences Cloud went GA in October 2025 and pharma is rebuilding its commercial stack, so timing is good. "
+                "TherapyGraph is the one graph that commercial, medical and clinical teams can all use.",
+        "questions": [
+            "Are you moving to, or evaluating, Salesforce Life Sciences Cloud?",
+            "How long does an asset take to get through MLR today?",
+            "Which studies are behind on enrollment, and how are sites chosen?",
+        ],
         "trigger": "Launch planning, HCP engagement, slow MLR review, trial enrollment delays, site selection",
-        "who": "Brand / commercial leads, Medical Affairs, Clinical Operations",
-        "cases": [
-            {
-                "title": "Compliant HCP engagement & MLR pre-review",
-                "short": "HCP engagement & MLR pre-review",
-                "problem": "Brand teams want a 360° view of healthcare professionals (HCPs) and next-best-action guidance, "
-                           "but every message must stay on-label and pass Medical-Legal-Regulatory (MLR) review, which takes weeks.",
-                "who": "Brand and omnichannel teams, field reps, Medical Affairs, MLR reviewers",
-                "pains": [
-                    "HCP data is spread across CRM, claims and public sources",
-                    "Generic content gets low engagement",
-                    "MLR review is a bottleneck for every asset",
-                ],
-                "facts": [
-                    ("$14.67B", "in industry payments to HCPs across 17M records published by CMS Open Payments (Program Year 2025)", "CMS via IntuitionLabs"),
-                ],
-                "solution": [
-                    "HCP 360 links prescribing, payments, trials and publications by NPI",
-                    "Pre-call briefing agent gives reps a one-page, compliant summary",
-                    "Next-best-action agent suggests channel, content and timing",
-                    "MLR pre-review agent flags off-label claims against the approved label before human review",
-                ],
-                "built_on": ["Life Sciences Cloud", "Marketing Cloud", "Data Cloud", "Agentforce"],
-                "hld": {
-                    "sources": ["CRM activity", "NPPES (NPI)", "CMS Open Payments", "Medicare Part D prescribers", "Approved labels (DailyMed)"],
-                    "ingest": ["NPI identity resolution", "Claims & payments ETL", "Label parsing", "Consent & opt-outs"],
-                    "knowledge": ["Knowledge graph: HCP · drug · indication · trial · publication · payment", "Vector index: content & claims library", "Engagement scores"],
-                    "agents": ["Pre-call briefing", "Next-best-action", "MLR pre-review", "MSL insight summarizer"],
-                    "experience": ["Life Sciences Cloud console", "Marketing Cloud", "MLR workflow (e.g. Veeva PromoMats)"],
-                },
-                "value_headline": "More relevant HCP engagement, and faster, safer content approval.",
-                "stats": [
-                    ("↓", "MLR cycle time per asset", "Pilot target"),
-                    ("↓", "Content rejected for off-label claims", "Pilot target"),
-                    ("↑", "HCP engagement rate", "Pilot target"),
-                    ("Oct 2025", "Life Sciences Cloud for Customer Engagement went GA", "Salesforce"),
-                ],
-                "benefits": {
-                    "Business": "Faster launches, better rep productivity",
-                    "Clinical": "Accurate, on-label information reaches HCPs",
-                    "IT & data": "One HCP graph across brands",
-                    "Compliance": "Sunshine Act and PhRMA Code guardrails built in",
-                },
-                "notes": {
-                    "cut": True,
-                    "talk": "Life Sciences Cloud is new and pharma is actively rebuilding its commercial stack, so the timing is good. "
-                            "Lead with MLR pre-review: it's a pain every brand team feels.",
-                    "questions": [
-                        "Are you moving from Veeva CRM to Salesforce Life Sciences Cloud, or evaluating it?",
-                        "How long does an asset take to get through MLR today?",
-                        "How do reps prepare for HCP calls?",
-                    ],
-                },
-            },
-            {
-                "title": "Clinical trial feasibility & patient recruitment",
-                "short": "Trial feasibility & recruitment",
-                "problem": "Most trials miss enrollment timelines. Eligibility criteria are free text, sites are chosen on relationships, "
-                           "and coordinators screen patients by hand.",
-                "who": "Clinical operations, feasibility teams, site networks, CRO partners",
-                "pains": [
-                    "Manual chart screening against long criteria lists",
-                    "Site selection not grounded in patient data",
-                    "Under-representation of diverse patients",
-                ],
-                "facts": [
-                    ("~40%", "less screening time with NIH's TrialGPT at matching accuracy close to experts (87.3%)", "NIH, Nature Communications 2024"),
-                ],
-                "solution": [
-                    "Criteria parser turns free-text eligibility into coded concept sets",
-                    "Feasibility agent returns masked patient counts by site and region",
-                    "Site recommender ranks sites by patient pool, past performance and diversity",
-                    "Patient matcher explains each criterion; recruitment journeys run with consent",
-                ],
-                "built_on": ["Life Sciences Cloud", "Marketing Cloud", "Experience Cloud"],
-                "hld": {
-                    "sources": ["ClinicalTrials.gov", "EHR / OMOP data (masked)", "CDC PLACES prevalence", "Investigator directory", "PubMed"],
-                    "ingest": ["Criteria NLP to OMOP concepts", "De-identification", "Site & investigator linking", "Consent capture"],
-                    "knowledge": ["Knowledge graph: trial · criterion · concept · site · investigator · region", "Vector index: protocols", "Masked counts"],
-                    "agents": ["Criteria parser", "Feasibility counter", "Site recommender", "Patient matcher", "Recruitment journey"],
-                    "experience": ["Feasibility dashboard", "Coordinator console", "Participant portal"],
-                },
-                "value_headline": "Find the right sites and patients faster, with every match explained.",
-                "stats": [
-                    ("~40%", "less clinician screening time (TrialGPT)", "NIH 2024"),
-                    ("87.3%", "patient-to-trial matching accuracy (TrialGPT)", "NIH 2024"),
-                    ("↓", "Time to first patient in", "Pilot target"),
-                    ("↑", "Enrollment diversity", "Pilot target"),
-                ],
-                "benefits": {
-                    "Business": "Shorter trials, earlier revenue, fewer rescue sites",
-                    "Clinical": "More patients offered relevant trials",
-                    "IT & data": "Reusable criteria and site graph across studies",
-                    "Compliance": "Masked counts only; IRB-approved outreach",
-                },
-                "notes": {
-                    "cut": False,
-                    "talk": "Strong public evidence here (NIH TrialGPT), so this is easy to defend in front of a sponsor. "
-                            "Also works for health systems that run research programs.",
-                    "questions": [
-                        "Which studies are behind on enrollment right now?",
-                        "How are feasibility and site selection done today?",
-                        "Do you have EHR data in OMOP or FHIR form for research?",
-                    ],
-                },
-            },
-        ],
+        "who_to_talk": "Brand / commercial leads, Medical Affairs, Clinical Operations",
     },
+    # ---------------------------------------------------------------- RxGraph
     {
-        "num": "03",
-        "title": "Pharmacy & Drug",
-        "bg": "bg_section_gold.png",
+        "name": "RxGraph",
+        "domain": "Pharmacy & Drug",
         "accent": "yellow",
-        "stage": "Dispense & manage medications",
-        "buyers": "Health-system pharmacy, specialty pharmacy, PBMs, pharma patient-services hubs",
-        "trigger": "Medication errors, prior-auth backlogs, CMS-0057-F, adherence, adverse-event capture",
-        "who": "Chief Pharmacy Officer, VP Patient Services, Drug Safety",
-        "cases": [
-            {
-                "title": "Medication reconciliation & interaction safety",
-                "short": "Med reconciliation & interaction safety",
-                "problem": "Medication lists are messy: free text, brand versus generic, duplicates. Pharmacists reconcile them by hand, "
-                           "and general-purpose AI models miss dangerous interactions.",
-                "who": "Hospital pharmacists, transitions-of-care nurses, ambulatory clinics",
-                "pains": [
-                    "Time-consuming reconciliation at admission and discharge",
-                    "Interaction alerts are noisy, so real risks get missed",
-                    "Adverse drug events drive readmissions",
-                ],
-                "facts": [
-                    ("4 of 4", "AI models tested missed the metoprolol–verapamil interaction in a 2024 study, which is why answers must be grounded", "ERCSP 2024"),
-                ],
-                "solution": [
-                    "Normalizer maps any free-text drug name to a standard drug code (RxNorm)",
-                    "Reconciler compares home, admission and discharge lists and flags discrepancies",
-                    "Interaction checker uses a curated drug knowledge graph first; AI only explains",
-                    "Pharmacist approves; patient-friendly instructions generated at the right reading level",
-                ],
-                "built_on": ["Health Cloud", "EHR integration (FHIR)", "Agentforce"],
-                "hld": {
-                    "sources": ["EHR medication lists (FHIR)", "RxNorm", "FDA labels (DailyMed)", "Pharmacogenomics (CPIC)", "Pharmacy claims"],
-                    "ingest": ["Drug-name normalization", "Label & interaction ETL", "Patient matching", "PHI controls"],
-                    "knowledge": ["Knowledge graph: product · ingredient · interaction · condition · gene", "Vector index: label text", "Rules engine"],
-                    "agents": ["Normalizer", "Reconciler", "Interaction checker", "Pharmacist review gate", "Patient educator"],
-                    "experience": ["Pharmacist worklist", "EHR / Health Cloud", "Discharge instructions"],
-                },
-                "value_headline": "Safer medication lists in minutes, with every alert traceable to its source.",
-                "stats": [
-                    ("↓", "Pharmacist minutes per reconciliation", "Pilot target"),
-                    ("↑", "Discrepancies caught before discharge", "Pilot target"),
-                    ("↓", "Readmissions linked to adverse drug events", "Pilot target"),
-                    ("100%", "of interaction answers cited to a source", "Design guarantee"),
-                ],
-                "benefits": {
-                    "Business": "Fewer readmissions and penalties, pharmacist capacity freed",
-                    "Clinical": "Fewer adverse drug events",
-                    "IT & data": "Standard drug codes reused across apps",
-                    "Compliance": "Human verification on every change",
-                },
-                "notes": {
-                    "cut": True,
-                    "talk": "The story: plain chatbots get drug interactions wrong; a graph of trusted drug data plus a pharmacist gate gets them right. "
-                            "That is exactly our grounded-AI capability.",
-                    "questions": [
-                        "Who does medication reconciliation today, and how long does it take?",
-                        "How noisy are your interaction alerts?",
-                        "Are adverse drug events a readmission driver for you?",
-                    ],
-                },
-            },
-            {
-                "title": "Specialty pharmacy hub: benefits, prior auth & adherence",
-                "short": "Specialty Rx hub & prior auth",
-                "problem": "Specialty drugs need benefits checks, prior authorization, copay help and adherence support. "
-                           "Each step is a manual handoff, so patients wait weeks or abandon therapy.",
-                "who": "Pharma patient-services hubs, specialty pharmacies, provider prior-auth teams",
-                "pains": [
-                    "Prior-auth packets assembled by hand from charts",
-                    "Denials and appeals drafted from scratch",
-                    "Adverse events in support calls can be missed",
-                ],
-                "facts": [
-                    ("Jan 2027", "CMS-0057-F requires impacted payers to offer a FHIR prior-authorization API (most requirements from Jan 1, 2027)", "CMS Interoperability & Prior Authorization Final Rule"),
-                ],
-                "solution": [
-                    "Benefits investigator checks coverage, formulary tier and requirements",
-                    "Prior-auth builder maps chart evidence to each payer criterion, with citations",
-                    "Appeal drafter and copay-program matcher remove manual rework",
-                    "Adherence coach nudges refills; adverse-event detector flags safety reports in calls",
-                ],
-                "built_on": ["Life Sciences Cloud / Health Cloud", "Service Cloud", "Marketing Cloud", "Agentforce"],
-                "hld": {
-                    "sources": ["Payer formularies (CMS Part D)", "Coverage policies (LCD/NCD)", "Da Vinci FHIR APIs", "Patient-support calls", "Copay program rules"],
-                    "ingest": ["Policy-to-criteria parsing", "Chart evidence extraction", "Call transcription", "PHI controls"],
-                    "knowledge": ["Knowledge graph: drug · plan · policy · criterion · evidence · program", "Vector index: policies", "Case history"],
-                    "agents": ["Benefits investigator", "Prior-auth builder", "Appeal drafter", "Adherence coach", "Adverse-event detector"],
-                    "experience": ["Hub case console", "Provider portal", "Patient SMS / app"],
-                },
-                "value_headline": "Get patients on therapy faster and keep them there.",
-                "stats": [
-                    ("↓", "Days from prescription to first fill", "Pilot target"),
-                    ("↑", "Prior-auth first-pass approval", "Pilot target"),
-                    ("↑", "Proportion of days covered (adherence)", "Pilot target"),
-                    ("Jan 2027", "CMS prior-authorization API deadline drives demand now", "CMS-0057-F"),
-                ],
-                "benefits": {
-                    "Business": "Less abandonment, more patients on therapy",
-                    "Clinical": "Faster access to specialty treatment",
-                    "IT & data": "FHIR-ready for the CMS prior-auth APIs",
-                    "Compliance": "Adverse events captured and routed to drug safety",
-                },
-                "notes": {
-                    "cut": False,
-                    "talk": "Timely because of the CMS prior-auth rule. Works for three buyer types: pharma hubs, specialty pharmacies and provider prior-auth teams.",
-                    "questions": [
-                        "How long from prescription to first fill for your specialty patients?",
-                        "How many prior auths a month, and what's the first-pass approval rate?",
-                        "How are adverse events in support calls captured today?",
-                    ],
-                },
-            },
+        "icon": "pill",
+        "tagline": "Pharmacy & Medication Intelligence Platform",
+        "subtitle": "Connecting medications, interactions, coverage, safety and supply with a knowledge graph",
+        "headline": "Medication decisions depend on data scattered across many systems",
+        "problem": "Medication lists are messy, interaction alerts are noisy, prior auth is manual, adherence slips and shortages hit "
+                   "without warning. General-purpose AI models also miss dangerous interactions.",
+        "who": "Health-system and specialty pharmacy, PBMs, pharma patient-services hubs, drug safety",
+        "problems": [
+            ("clipboard-check", "Messy medication lists", "Reconciled by hand at admission and discharge"),
+            ("triangle-alert", "Missed interactions", "Noisy alerts hide real risks"),
+            ("file-text", "Prior-auth backlogs", "Packets assembled from charts by hand"),
+            ("bell", "Poor adherence", "Refill gaps go unnoticed"),
+            ("siren", "Missed adverse events", "Safety reports lost in support calls"),
+            ("package", "Shortages", "Substitutes chosen under pressure"),
         ],
+        "definition": "One graph of every medication (ingredients, interactions, coverage, safety and supply) with agents that reconcile, check, authorize and substitute.",
+        "modules": [
+            ("Medication reconciliation", "free text to standard codes, discrepancies flagged"),
+            ("Interaction & PGx safety", "graph lookup first; AI only explains"),
+            ("Benefits & prior auth", "evidence mapped to payer criteria (CMS-0057-F ready)"),
+            ("Adherence & adverse events", "refill nudges and safety-report capture"),
+            ("Shortage substitution", "equivalent options checked against formulary"),
+        ],
+        "built_on": ["Health Cloud", "Service Cloud", "Agentforce", "EHR (FHIR)"],
+        "center": ("Medication", "pill"),
+        "spokes": [
+            ("Ingredients & ATC", "flask-conical"), ("Interactions", "triangle-alert"), ("Labels", "file-text"),
+            ("Pharmaco-genomics", "dna"), ("Formulary & coverage", "scale"), ("Prior-auth criteria", "clipboard-check"),
+            ("Adverse events", "siren"), ("NDC & shortages", "package"),
+        ],
+        "stats": [("12", "Entity types"), ("22", "Relationships"), ("6", "Vector indexes")],
+        "sources": [
+            ("RxNorm", "Drug identity (RxCUI)", "pill"),
+            ("DailyMed / openFDA", "Labels, indications, warnings", "file-text"),
+            ("openFDA FAERS", "Adverse event reports", "siren"),
+            ("CPIC / PharmGKB", "Gene–drug guidance", "dna"),
+            ("CMS Part D & LCD/NCD", "Formulary & coverage rules", "scale"),
+            ("FDA shortages & NDC", "Supply status", "package"),
+        ],
+        "etl": [
+            ("database", ["load_rxnorm", "load_labels"]),
+            ("siren", ["ingest_faers", "load_cpic"]),
+            ("scale", ["load_formulary", "load_policies"]),
+            ("package", ["ingest_shortages", "embed_nodes"]),
+        ],
+        "agents": ["Reconciler", "Interaction checker", "Prior-auth builder", "Adherence coach", "Substitute finder"],
+        "outputs": [("Pharmacist worklist", "clipboard-check"), ("Health Cloud / EHR", "layout-dashboard"),
+                    ("Natural-language Q&A", "message-square")],
+        "capabilities": [
+            ("Med reconciliation", "clipboard-check"), ("Interaction safety", "shield-check"), ("Prior auth", "file-text"),
+            ("Adherence", "bell"), ("Adverse events", "siren"), ("Shortage substitution", "package"), ("GraphRAG Q&A", "network"),
+        ],
+        "value_headline": "Safer medication lists, faster access to therapy and fewer surprises from shortages.",
+        "value_stats": [
+            ("4 of 4", "AI models tested missed a known interaction, so answers must be grounded", "ERCSP 2024"),
+            ("↓", "Pharmacist minutes per reconciliation", "Pilot target"),
+            ("↑", "Prior-auth first-pass approval", "Pilot target"),
+            ("Jan 2027", "CMS prior-authorization API deadline (CMS-0057-F)", "CMS"),
+        ],
+        "benefits": {
+            "Business": "Fewer readmissions, faster time to therapy, less waste",
+            "Clinical": "Fewer adverse drug events, continuity during shortages",
+            "IT & data": "Standard drug codes and FHIR-ready prior-auth APIs",
+            "Compliance": "Pharmacist approves every change; adverse events routed to safety",
+        },
+        "talk": "Plain chatbots get drug interactions wrong; a graph of trusted drug data plus a pharmacist gate gets them right. "
+                "The prior-auth deadline in January 2027 makes this urgent for payers, pharmacies and pharma hubs.",
+        "questions": [
+            "Who does medication reconciliation today, and how long does it take?",
+            "How many prior auths a month, and what's the first-pass approval rate?",
+            "How did the last major shortage affect you, and how early did you know?",
+        ],
+        "trigger": "Medication errors, noisy alerts, prior-auth backlogs, CMS-0057-F, adherence, adverse events, shortages",
+        "who_to_talk": "Chief Pharmacy Officer, VP Patient Services, Drug Safety",
     },
+    # ---------------------------------------------------------------- DeviceGraph
     {
-        "num": "04",
-        "title": "Medical Devices & IoT",
-        "bg": "bg_section_navy.png",
-        "accent": "cyan",
-        "stage": "Monitor devices & patients",
-        "buyers": "MedTech manufacturers, health systems, remote-monitoring providers",
-        "trigger": "Complaint backlogs, FDA / EU MDR reporting, recalls, remote monitoring programs, alert fatigue",
-        "who": "VP Quality / Regulatory, Post-Market Surveillance, Virtual Care leaders",
-        "cases": [
-            {
-                "title": "Complaint handling & post-market surveillance",
-                "short": "Device complaints & surveillance",
-                "problem": "Device makers must triage every complaint, decide whether it's reportable to FDA, code it consistently "
-                           "and spot trends early. Today that's manual, slow and inconsistent.",
-                "who": "Complaint handling, post-market surveillance, regulatory affairs, quality",
-                "pains": [
-                    "Complaint backlogs and late FDA reports",
-                    "Inconsistent adverse-event coding",
-                    "Trends spotted after a recall, not before",
-                ],
-                "facts": [
-                    ("2M+", "medical device reports received by FDA each year (MAUDE)", "FDA"),
-                ],
-                "solution": [
-                    "Intake agent structures complaints from calls, email and service records",
-                    "Reportability advisor suggests the FDA / EU MDR decision with cited precedent; a person decides",
-                    "Coding agent applies standard adverse-event codes (IMDRF)",
-                    "Trend agent watches MAUDE, recalls and internal data for early signals",
-                ],
-                "built_on": ["Service Cloud", "Health Cloud", "Tableau"],
-                "hld": {
-                    "sources": ["Complaints & service cases", "FDA MAUDE & recalls", "510(k) / PMA records", "UDI database (GUDID)", "IMDRF code sets"],
-                    "ingest": ["UDI entity resolution", "Narrative NLP", "Product-code mapping", "Quality-system sync"],
-                    "knowledge": ["Knowledge graph: device · UDI · event · code · recall · predicate", "Vector index: narratives", "Trend statistics"],
-                    "agents": ["Complaint intake", "Reportability advisor", "IMDRF coder", "Trend detector", "Regulatory reviewer gate"],
-                    "experience": ["Service Cloud case console", "Quality system", "Tableau trend reports"],
-                },
-                "value_headline": "Faster, more consistent complaint handling and earlier safety signals.",
-                "stats": [
-                    ("↓", "Complaint cycle time", "Pilot target"),
-                    ("0", "late FDA reports (goal)", "Pilot target"),
-                    ("~59%", "agreement for an unaided AI model with human coding, which is why graph + human review matter", "2026 MAUDE study (preprint)"),
-                    ("↑", "Trend detection lead time", "Pilot target"),
-                ],
-                "benefits": {
-                    "Business": "Lower cost of quality, fewer surprise recalls",
-                    "Clinical": "Patient-safety issues found earlier",
-                    "IT & data": "One device graph linking UDI, complaints and recalls",
-                    "Compliance": "21 CFR 803, EU MDR vigilance and audit trail",
-                },
-                "notes": {
-                    "cut": True,
-                    "talk": "Regulated, high-volume and text-heavy: a sweet spot for grounded AI. Be clear that people make the reportability decision; the AI prepares it.",
-                    "questions": [
-                        "How many complaints a month, and what's the current backlog?",
-                        "Have you had late MDRs or FDA observations on complaint handling?",
-                        "Is complaint intake in Salesforce or another system?",
-                    ],
-                },
-            },
-            {
-                "title": "Remote patient monitoring & connected devices",
-                "short": "Remote patient monitoring",
-                "problem": "Connected devices create a flood of readings. Care teams drown in alerts, and billing rules "
-                           "(days of data, minutes of care) are tracked by hand.",
-                "who": "Virtual care and RPM programs, care managers, device and RPM vendors",
-                "pains": [
-                    "Alert fatigue hides the patients who need help",
-                    "Device data isn't in the care team's workflow",
-                    "Revenue lost when billing requirements aren't tracked",
-                ],
-                "facts": [
-                    ("16 days", "of readings per 30-day period required for the core RPM billing code (CMS adds shorter-period codes for 2026)", "CMS Physician Fee Schedule"),
-                ],
-                "solution": [
-                    "Devices stream into a standard FHIR format; only daily summaries go into the graph",
-                    "Triage uses clinical rules and anomaly models to decide; AI writes the explanation",
-                    "Care-manager daily brief and escalation routing to the right role",
-                    "Billing tracker and patient coaching nudges keep programs on track",
-                ],
-                "built_on": ["Health Cloud", "MuleSoft / Data Cloud", "Agentforce", "Marketing Cloud"],
-                "hld": {
-                    "sources": ["Wearables & home devices", "Device clouds (BLE / IEEE 11073)", "EHR care plans", "Clinical thresholds", "Billing rules"],
-                    "ingest": ["IoT gateway & FHIR mapping", "Time-series store", "Daily summaries", "Device-patient pairing"],
-                    "knowledge": ["Knowledge graph: patient · device · metric · threshold · care plan · care team", "Anomaly models", "Billing ledger"],
-                    "agents": ["Triage", "Care-manager brief", "Escalation router", "Billing tracker", "Patient coach"],
-                    "experience": ["Health Cloud care timeline", "Nurse worklist", "Patient app / SMS"],
-                },
-                "value_headline": "Fewer, better alerts and a remote-monitoring program that pays for itself.",
-                "stats": [
-                    ("↓", "Alerts per nurse per day", "Pilot target"),
-                    ("↓", "Time to escalate a high-risk reading", "Pilot target"),
-                    ("↑", "Patients meeting billing requirements", "Pilot target"),
-                    ("↓", "30-day readmissions in enrolled cohorts", "Pilot target"),
-                ],
-                "benefits": {
-                    "Business": "Billable, scalable virtual-care revenue",
-                    "Clinical": "Earlier intervention, fewer readmissions",
-                    "IT & data": "Standards-based device integration (FHIR)",
-                    "Compliance": "Clinician decides; FDA decision-support guidance respected",
-                },
-                "notes": {
-                    "cut": False,
-                    "talk": "The IoT story. The key design choice: rules and models make the clinical call, and AI explains, so it stays safe and auditable.",
-                    "questions": [
-                        "How many patients are in remote monitoring today, and with which devices?",
-                        "How many alerts does a nurse handle per day?",
-                        "Are you capturing all the RPM billing you're eligible for?",
-                    ],
-                },
-            },
+        "name": "DeviceGraph",
+        "domain": "Medical Devices & IoT",
+        "accent": "purple",
+        "icon": "cpu",
+        "tagline": "Medical Device & IoT Intelligence Platform",
+        "subtitle": "Connecting devices, patients, telemetry, complaints, recalls and security with a knowledge graph",
+        "headline": "Device data is everywhere, but nobody sees the whole picture",
+        "problem": "Remote-monitoring readings flood care teams, complaints pile up against tight FDA deadlines, recalls are hard to trace "
+                   "to patients, and connected devices carry known vulnerabilities.",
+        "who": "MedTech quality & regulatory, virtual care / RPM programs, biomedical engineering",
+        "problems": [
+            ("bell", "Alert fatigue", "Too many readings, too few real signals"),
+            ("clipboard-check", "Complaint backlogs", "Manual triage and inconsistent coding"),
+            ("siren", "Late FDA reports", "Reportability decided under time pressure"),
+            ("search", "Recall traceability", "Which patients have the affected device?"),
+            ("shield-alert", "Device vulnerabilities", "Known CVEs on connected devices"),
+            ("badge-dollar-sign", "RPM billing missed", "Data-day and minute rules tracked by hand"),
         ],
+        "definition": "One graph that follows every device (UDI) from patient and telemetry to complaints, recalls and vulnerabilities, with agents for triage, reporting and remediation.",
+        "modules": [
+            ("Remote-monitoring triage", "rules and models decide; AI explains"),
+            ("Complaint & reportability", "intake, IMDRF coding, FDA / EU MDR advice"),
+            ("Recall & UDI tracing", "device to patient in one query"),
+            ("Post-market trends", "early signals from MAUDE and internal data"),
+            ("Device cybersecurity", "CVE-to-asset matching and patch plans"),
+        ],
+        "built_on": ["Health Cloud", "Service Cloud", "MuleSoft", "Tableau"],
+        "center": ("Device (UDI)", "cpu"),
+        "spokes": [
+            ("Patients", "user-round"), ("Telemetry", "activity"), ("Care plans", "heart-pulse"),
+            ("Complaints", "message-square"), ("MAUDE events", "siren"), ("Recalls", "triangle-alert"),
+            ("510(k) / PMA", "file-text"), ("Vulnera-bilities", "shield-alert"),
+        ],
+        "stats": [("12", "Entity types"), ("21", "Relationships"), ("5", "Vector indexes")],
+        "sources": [
+            ("Device telemetry", "Wearables & home devices (FHIR)", "watch"),
+            ("FDA GUDID", "UDI device identity", "database"),
+            ("FDA MAUDE", "Device adverse events", "siren"),
+            ("FDA recalls & 510(k)", "Recalls, clearances, predicates", "file-text"),
+            ("CISA ICSMA & NVD", "Device vulnerabilities", "shield-alert"),
+            ("Complaints & service", "Service Cloud cases", "message-square"),
+        ],
+        "etl": [
+            ("wifi", ["ingest_telemetry", "to_fhir"]),
+            ("database", ["load_gudid", "ingest_maude"]),
+            ("file-text", ["load_recalls", "load_510k"]),
+            ("shield-alert", ["load_cves", "embed_nodes"]),
+        ],
+        "agents": ["RPM triage", "Complaint intake", "Reportability advisor", "Trend detector", "Patch planner"],
+        "outputs": [("Care team console", "layout-dashboard"), ("Quality & regulatory", "clipboard-check"),
+                    ("Natural-language Q&A", "message-square")],
+        "capabilities": [
+            ("Remote monitoring", "activity"), ("Complaint handling", "clipboard-check"), ("FDA reporting", "siren"),
+            ("Recall tracing", "search"), ("Cybersecurity", "shield-check"), ("GraphRAG Q&A", "network"), ("Agentic AI", "bot"),
+        ],
+        "value_headline": "Fewer, better alerts, faster complaint handling and devices you can trace and secure.",
+        "value_stats": [
+            ("2M+", "medical device reports FDA receives each year (MAUDE)", "FDA"),
+            ("↓", "Alerts per nurse per day", "Pilot target"),
+            ("↓", "Complaint cycle time and late FDA reports", "Pilot target"),
+            ("↓", "Time to remediate critical device vulnerabilities", "Pilot target"),
+        ],
+        "benefits": {
+            "Business": "Billable virtual care, lower cost of quality, fewer surprise recalls",
+            "Clinical": "Earlier intervention and safety issues found sooner",
+            "IT & data": "Standards-based device integration (FHIR, UDI)",
+            "Compliance": "21 CFR 803, EU MDR vigilance; people make every reportability call",
+        },
+        "talk": "The IoT story and the device-quality story in one graph. Key design choice: rules and models make the clinical call and "
+                "people make the reportability call; AI prepares and explains, so it stays safe and auditable.",
+        "questions": [
+            "How many patients are in remote monitoring, and how many alerts does a nurse handle per day?",
+            "How many complaints a month, and any late MDRs or FDA observations?",
+            "Can you trace a recalled device to the patients who have it today?",
+        ],
+        "trigger": "Remote monitoring programs, alert fatigue, complaint backlogs, FDA / EU MDR reporting, recalls, device security",
+        "who_to_talk": "VP Quality / Regulatory, Post-Market Surveillance, Virtual Care, Biomed / CISO",
     },
+    # ---------------------------------------------------------------- ChainGraph
     {
-        "num": "05",
-        "title": "Manufacturing & Supply Chain",
-        "bg": "bg_section_magenta.png",
-        "accent": "magenta",
-        "stage": "Make & supply",
-        "buyers": "Pharma and biotech manufacturing, CDMOs, distributors, hospital pharmacy",
-        "trigger": "Deviation backlogs, FDA 483s / warning letters, CAPA overdue, drug shortages, supplier risk",
-        "who": "VP Quality / QA, Site Heads, Supply Chain, Hospital Pharmacy Directors",
-        "cases": [
-            {
-                "title": "GMP deviation & CAPA investigation copilot",
-                "short": "Deviation & CAPA copilot",
-                "problem": "Deviation investigations and corrective actions (CAPAs) take weeks. Similar past events are buried in quality records, "
-                           "and repeat findings lead to FDA observations and warning letters.",
-                "who": "QA investigators, site quality heads, manufacturing engineers",
-                "pains": [
-                    "Investigations start from a blank page",
-                    "Repeat deviations because root causes aren't connected",
-                    "Overdue CAPAs and inspection risk",
-                ],
-                "facts": [
-                    ("40%", "reduction in deviation closure time reported in industry GenAI case studies", "McKinsey (vendor-reported)"),
-                ],
-                "solution": [
-                    "Triage agent sets criticality and routes the deviation",
-                    "Similar-event finder links batch, equipment, material lot and past root causes",
-                    "Root-cause drafter writes the 5-Whys / fishbone with citations; QA decides",
-                    "CAPA checker tracks effectiveness and matches FDA 483 themes",
-                ],
-                "built_on": ["Quality system (e.g. Veeva Vault QMS)", "MES / LIMS integration", "Any cloud"],
-                "hld": {
-                    "sources": ["Deviations, CAPAs, change controls", "MES / eBMR & LIMS", "SOPs", "FDA 483s & warning letters", "GMP regulations (21 CFR 210/211, ICH)"],
-                    "ingest": ["Quality-record ETL", "Batch genealogy", "SOP chunking", "Validated, versioned pipelines"],
-                    "knowledge": ["Knowledge graph: batch · equipment · lot · deviation · cause · CAPA · SOP", "Vector index: investigations", "Regulation library"],
-                    "agents": ["Deviation triage", "Similar-event finder", "Root-cause drafter", "CAPA effectiveness", "QA approval gate"],
-                    "experience": ["Quality system workflow", "Investigator workbench", "Quality dashboards"],
-                },
-                "value_headline": "Close investigations faster and stop repeat deviations, with QA always in control.",
-                "stats": [
-                    ("40%", "faster deviation closure reported in industry case studies", "McKinsey (vendor-reported)"),
-                    ("↓", "Repeat deviations", "Pilot target"),
-                    ("↓", "Overdue CAPAs", "Pilot target"),
-                    ("100%", "of AI drafts approved by qualified QA (Part 11 audit trail)", "Design guarantee"),
-                ],
-                "benefits": {
-                    "Business": "More right-first-time batches, less lost product",
-                    "Clinical": "Consistent product quality for patients",
-                    "IT & data": "Validated, versioned AI aligned to GAMP 5 / CSA",
-                    "Compliance": "Inspection-ready; aligned to Part 11, Annex 11 and draft Annex 22 (AI)",
-                },
-                "notes": {
-                    "cut": True,
-                    "talk": "High value but highly regulated. Lead with control: AI drafts, qualified QA decides, every step is in the Part 11 audit trail.",
-                    "questions": [
-                        "How long does an average deviation investigation take to close?",
-                        "Any recent 483 observations on investigations or CAPA?",
-                        "Which quality system and MES do you run?",
-                    ],
-                },
-            },
-            {
-                "title": "Drug shortage early warning & supply resilience",
-                "short": "Shortage early warning",
-                "problem": "Hospitals and manufacturers learn about shortages late. Finding a safe substitute and re-planning supply is manual and slow.",
-                "who": "Hospital pharmacy and supply chain, manufacturer supply planning, distributors",
-                "pains": [
-                    "Little warning before stock-outs",
-                    "Single-source suppliers and facilities are hidden risks",
-                    "Therapeutic substitution decided under pressure",
-                ],
-                "facts": [
-                    ("323", "active US drug shortages in Q1 2024, an all-time high", "ASHP"),
-                ],
-                "solution": [
-                    "Early-warning agent watches FDA shortages, recalls, warning letters and supplier signals",
-                    "Risk map links each product to manufacturer, facility and country",
-                    "Substitute finder checks equivalence, formulary and label before suggesting options",
-                    "Brief writer prepares Pharmacy & Therapeutics committee and clinician alerts",
-                ],
-                "built_on": ["Any cloud", "Tableau", "Health Cloud / Service Cloud alerts"],
-                "hld": {
-                    "sources": ["FDA drug shortages & recalls", "NDC directory", "Facility registrations", "Orange Book equivalence", "Inventory & purchasing"],
-                    "ingest": ["NDC & facility linking", "Supplier signals", "Inventory sync", "Equivalence mapping"],
-                    "knowledge": ["Knowledge graph: NDC · drug · manufacturer · facility · country · substitute", "Risk scores", "Formulary"],
-                    "agents": ["Shortage early warning", "Supplier risk", "Substitute finder", "P&T brief writer", "Pharmacist approval"],
-                    "experience": ["Supply dashboard", "Pharmacy alerts", "Clinician notifications"],
-                },
-                "value_headline": "See shortages coming and keep patients on safe therapy.",
-                "stats": [
-                    ("↑", "Days of warning before stock-out", "Pilot target"),
-                    ("↓", "Time to approve a substitute", "Pilot target"),
-                    ("↓", "Patients affected by stock-outs", "Pilot target"),
-                    ("323", "active US shortages at the Q1 2024 peak", "ASHP"),
-                ],
-                "benefits": {
-                    "Business": "Less emergency buying, lower waste",
-                    "Clinical": "Continuity of care during shortages",
-                    "IT & data": "Product-to-facility graph reused for supplier risk",
-                    "Compliance": "Pharmacist approves every substitution",
-                },
-                "notes": {
-                    "cut": False,
-                    "talk": "Resonates with both hospitals and manufacturers. Mostly public data, so a proof of concept is fast.",
-                    "questions": [
-                        "How did the last major shortage affect you, and how early did you know?",
-                        "How are substitutes approved today?",
-                        "Do you track single-source suppliers and facilities?",
-                    ],
-                },
-            },
+        "name": "ChainGraph",
+        "domain": "Manufacturing & Supply Chain",
+        "accent": "green",
+        "icon": "factory",
+        "tagline": "Manufacturing & Supply Chain Intelligence Platform",
+        "subtitle": "Connecting suppliers, plants, batches, quality and distribution with a knowledge graph",
+        "headline": "From supplier to patient, the chain is only visible in pieces",
+        "problem": "Supplier risks are hidden, deviation investigations take weeks, repeat findings lead to FDA 483s, and shortages are "
+                   "discovered too late to plan around.",
+        "who": "Pharma & biotech manufacturing, CDMOs, quality, supply chain, distributors",
+        "problems": [
+            ("truck", "Hidden supplier risk", "Single-source materials and facilities"),
+            ("search", "Slow investigations", "Deviations start from a blank page"),
+            ("workflow", "Repeat deviations", "Root causes never connected; CAPAs overdue"),
+            ("clipboard-check", "Batch review bottleneck", "eBMR review delays release"),
+            ("file-search", "Inspection findings", "Repeat FDA 483 themes"),
+            ("package", "Late shortage warning", "Stock-outs discovered too late"),
         ],
+        "definition": "One graph of the product chain (supplier, material, plant, batch, distribution) with agents for quality, risk and shortage planning.",
+        "modules": [
+            ("Supplier & material risk", "single-source and facility risk map"),
+            ("Deviation & CAPA copilot", "similar events, root cause and CAPA drafts"),
+            ("Batch-record review", "exceptions flagged before QA release"),
+            ("Inspection readiness", "matches findings to FDA 483 themes"),
+            ("Shortage early warning", "supply signals and substitution plans"),
+        ],
+        "built_on": ["Quality system (e.g. Veeva Vault QMS)", "MES / LIMS / ERP", "Tableau", "Any cloud"],
+        "center": ("Product lot", "boxes"),
+        "spokes": [
+            ("Suppliers", "truck"), ("Materials & lots", "package"), ("Plants & equipment", "factory"),
+            ("Batch records", "test-tube"), ("Deviations & CAPA", "triangle-alert"), ("SOPs & 483s", "scale"),
+            ("Distribution", "route"), ("Demand & shortages", "gauge"),
+        ],
+        "stats": [("13", "Entity types"), ("24", "Relationships"), ("6", "Vector indexes")],
+        "sources": [
+            ("ERP & suppliers", "Suppliers, materials, orders", "truck"),
+            ("MES / eBMR & LIMS", "Batches, equipment, tests", "factory"),
+            ("Quality system (QMS)", "Deviations, CAPAs, changes", "clipboard-check"),
+            ("FDA 483s & letters", "Inspection findings", "file-search"),
+            ("FDA shortages & recalls", "Market supply signals (NDC)", "package"),
+            ("DSCSA / distribution", "Serialization & inventory", "route"),
+        ],
+        "etl": [
+            ("truck", ["load_erp", "load_suppliers"]),
+            ("factory", ["ingest_mes", "ingest_lims"]),
+            ("clipboard-check", ["load_qms", "load_483s"]),
+            ("package", ["ingest_shortages", "embed_nodes"]),
+        ],
+        "agents": ["Supplier risk", "Deviation triage", "Root-cause drafter", "CAPA checker", "Shortage early warning"],
+        "outputs": [("Quality workbench", "clipboard-check"), ("Supply dashboard", "layout-dashboard"),
+                    ("Natural-language Q&A", "message-square")],
+        "capabilities": [
+            ("Supplier risk", "truck"), ("Deviation & CAPA", "workflow"), ("Batch review", "clipboard-check"),
+            ("Inspection readiness", "file-search"), ("Shortage warning", "package"), ("GraphRAG Q&A", "network"),
+            ("Agentic AI", "bot"),
+        ],
+        "value_headline": "Close investigations faster, stop repeat deviations and see shortages coming, with QA always in control.",
+        "value_stats": [
+            ("40%", "faster deviation closure reported in industry GenAI case studies", "McKinsey (vendor-reported)"),
+            ("323", "active US drug shortages at the Q1 2024 peak", "ASHP"),
+            ("↓", "Repeat deviations and overdue CAPAs", "Pilot target"),
+            ("↑", "Days of warning before a stock-out", "Pilot target"),
+        ],
+        "benefits": {
+            "Business": "Right-first-time batches, less lost product, less emergency buying",
+            "Clinical": "Consistent quality and continuity of supply for patients",
+            "IT & data": "Validated, versioned pipelines (GAMP 5 / CSA)",
+            "Compliance": "QA approves every AI draft; Part 11 audit trail",
+        },
+        "talk": "High value and highly regulated. Lead with control: AI drafts, qualified QA decides, every step sits in the Part 11 audit trail. "
+                "The supply-chain half uses mostly public data, so a proof of concept is fast.",
+        "questions": [
+            "How long does an average deviation investigation take to close?",
+            "Any recent 483 observations on investigations or CAPA?",
+            "Do you track single-source suppliers and facilities for your key products?",
+        ],
+        "trigger": "Deviation backlogs, FDA 483s / warning letters, overdue CAPAs, supplier risk, drug shortages",
+        "who_to_talk": "VP Quality / QA, Site Heads, Supply Chain, Hospital Pharmacy Directors",
     },
 ]
