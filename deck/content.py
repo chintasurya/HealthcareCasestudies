@@ -99,8 +99,8 @@ PLATFORMS = [
         "outcomes": [("Care gaps closed", "clipboard-check"), ("Personalized outreach", "megaphone"), ("Visits booked", "calendar-check"), ("Referrals kept", "route"), ("Fair access", "scale"), ("Faster compliant campaigns", "shield-check")],
         "value_headline": "Close more care gaps, book more visits and keep patients in network, with every send compliant.",
         "value_stats": [
-            ("↑", "Care-gap closure rate per campaign", "Pilot target"),
-            ("↓", "Calls per booked appointment", "Pilot target"),
+            ("20–30%", "higher care-gap closure rate per campaign", "Pilot target"),
+            ("25–35%", "fewer calls per booked appointment", "Pilot target"),
             ("29%", "faster case resolution reported with Health Cloud", "Salesforce (vendor-reported)"),
             ("100%", "of outreach checked for consent and PHI before send", "Design guarantee"),
         ],
@@ -172,8 +172,8 @@ PLATFORMS = [
         "value_headline": "More relevant HCP engagement, faster content approval and trials that enroll on time.",
         "value_stats": [
             ("~40%", "less trial screening time with NIH's TrialGPT approach", "NIH, Nature Communications 2024"),
-            ("↓", "MLR cycle time per asset", "Pilot target"),
-            ("↑", "HCP engagement rate", "Pilot target"),
+            ("30–50%", "shorter MLR review cycle per asset", "Pilot target"),
+            ("15–25%", "higher HCP engagement rate", "Pilot target"),
             ("$14.67B", "in HCP payments in CMS Open Payments (PY2025), linkable by NPI", "CMS via IntuitionLabs"),
         ],
         "benefits": {
@@ -244,8 +244,8 @@ PLATFORMS = [
         "value_headline": "Safer medication lists, faster access to therapy and fewer surprises from shortages.",
         "value_stats": [
             ("4 of 4", "AI models tested missed a known interaction, so answers must be grounded", "ERCSP 2024"),
-            ("↓", "Pharmacist minutes per reconciliation", "Pilot target"),
-            ("↑", "Prior-auth first-pass approval", "Pilot target"),
+            ("40–60%", "less pharmacist time per reconciliation", "Pilot target"),
+            ("15–25%", "higher prior-auth first-pass approval", "Pilot target"),
             ("Jan 2027", "CMS prior-authorization API deadline (CMS-0057-F)", "CMS"),
         ],
         "benefits": {
@@ -316,9 +316,9 @@ PLATFORMS = [
         "value_headline": "Fewer, better alerts, faster complaint handling and devices you can trace and secure.",
         "value_stats": [
             ("2M+", "medical device reports FDA receives each year (MAUDE)", "FDA"),
-            ("↓", "Alerts per nurse per day", "Pilot target"),
-            ("↓", "Complaint cycle time and late FDA reports", "Pilot target"),
-            ("↓", "Time to remediate critical device vulnerabilities", "Pilot target"),
+            ("30–50%", "fewer alerts per nurse per day", "Pilot target"),
+            ("30–40%", "shorter complaint cycle time", "Pilot target"),
+            ("40–60%", "faster fix of critical device vulnerabilities", "Pilot target"),
         ],
         "benefits": {
             "Business": "Billable virtual care, lower cost of quality, fewer surprise recalls",
@@ -389,8 +389,8 @@ PLATFORMS = [
         "value_stats": [
             ("40%", "faster deviation closure reported in industry GenAI case studies", "McKinsey (vendor-reported)"),
             ("323", "active US drug shortages at the Q1 2024 peak", "ASHP"),
-            ("↓", "Repeat deviations and overdue CAPAs", "Pilot target"),
-            ("↑", "Days of warning before a stock-out", "Pilot target"),
+            ("20–30%", "fewer repeat deviations and overdue CAPAs", "Pilot target"),
+            ("25–40%", "earlier warning before a stock-out", "Pilot target"),
         ],
         "benefits": {
             "Business": "Right-first-time batches, less lost product, less emergency buying",

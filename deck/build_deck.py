@@ -563,11 +563,11 @@ def value_slide(d, p):
     cw, gap = 2.88, 0.2
     for i, (big, label, src) in enumerate(p["value_stats"]):
         x = ML + i * (cw + gap)
-        size = 54 if len(big) <= 5 else 40
+        size = 54 if len(big) <= 5 else (46 if len(big) <= 6 else 40)
         tb(s, x, 2.15, cw, 0.9, big, size=size, light=True, color=CYAN)
         lh = text_h(label, 14, cw - 0.1) * 1.15
         tb(s, x, 3.15, cw - 0.1, lh, label, size=14, color=WHITE)
-        cap = src if src.startswith(("Pilot", "Design")) else "Source: " + src
+        cap = "Pilot target (validated in pilot)" if src == "Pilot target" else (src if src.startswith("Design") else "Source: " + src)
         tb(s, x, 3.15 + lh + 0.08, cw - 0.1, 0.4, cap, size=10, italic=True, color=SOFT)
     hline(s, ML, 4.85, W - ML, WHITE, 0.75, dash=True)
     dots = [CYAN, YELLOW, MAGENTA, GREEN]
@@ -577,7 +577,7 @@ def value_slide(d, p):
         tb(s, x + 0.25, 5.08, cw - 0.3, 0.3, k, size=14, bold=True, color=WHITE)
         tb(s, x, 5.5, cw - 0.1, 1.0, v, size=13, color=SOFT)
     q = "\n".join(f"  {n + 1}. {qq}" for n, qq in enumerate(p["questions"]))
-    d.notes(s, "Value: arrows are pilot targets we agree with the client in the ideation workshop; numbers with a source are public evidence.\n\n"
+    d.notes(s, "Value: ranges marked Pilot target are targets we agree with the client in the ideation workshop and measure in the pilot; numbers with a source are public evidence.\n\n"
                "Discovery questions for account managers:\n" + q)
 
 
