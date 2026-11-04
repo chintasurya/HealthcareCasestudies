@@ -35,7 +35,7 @@ ENGAGEMENT_STEPS = [
 ]
 
 UNIVERSAL = {
-    "promise": "One architecture, five blueprints",
+    "promise": "One architecture, six blueprints",
     "subtitle": "Every blueprint uses the same four layers and trust layer, and runs on any cloud. Only the data, the central entity and the agents change.",
     "sources": [
         ("Clinical systems", "EHR, claims (FHIR)", "hospital"),
@@ -422,5 +422,81 @@ PLATFORMS = [
         ],
         "trigger": "Deviation backlogs, FDA 483s / warning letters, overdue CAPAs, supplier risk, drug shortages",
         "who_to_talk": "VP Quality / QA, Site Heads, Supply Chain, Hospital Pharmacy Directors",
+    },
+    # ---------------------------------------------------------------- ShieldGraph (powered by ShieldForge)
+    {
+        "name": "ShieldGraph",
+        "evidence": ("5", "compliance frameworks already mapped in ShieldForge (HIPAA, SOX ITGC, NIST 800-53, PCI-DSS, GDPR)", "ShieldForge (Insight Global, in-house)"),
+        "domain": "Security, Access & Compliance",
+        "accent": "orange",
+        "icon": "shield-check",
+        "promise": "Every system's access, audited in one view",
+        "subtitle": "From scattered access and configuration metadata to action: one identity-centered model, agents on top, auditors in control",
+        "headline": "Access and configuration risk is spread across dozens of systems",
+        "problem": "Who can do what lives in Salesforce, Workday, ERP, ServiceNow and the cloud, each with its own console. Audits are manual and "
+                   "spreadsheet-driven, so excessive access and segregation-of-duties conflicts go unseen until the auditor finds them.",
+        "who": "CISO, CIO, Internal Audit, Compliance, system owners (any industry; healthcare leads with HIPAA and SOX)",
+        "problems": [
+            ("key-round", "Excessive access", "Users keep permissions they no longer need"),
+            ("scale", "SoD conflicts", "One person can create and approve the same transaction"),
+            ("list-checks", "Manual access reviews", "Quarterly certifications run on spreadsheets"),
+            ("gauge", "Low audit scores", "Findings repeat audit after audit"),
+            ("shield-alert", "Risky configuration", "Flows, code and connected apps nobody reviews"),
+            ("eye", "No single view", "Every system has its own console and report"),
+        ],
+        "definition": "One graph of every identity's access across systems, built from metadata only, with agents that score, flag, review and report.",
+        "modules": [
+            ("Metadata scanner", "reads roles, permissions and configuration from any system"),
+            ("Access & SoD analyzer", "excessive access and conflicting duties, per person"),
+            ("Audit score & frameworks", "0–100 posture mapped to HIPAA, SOX, NIST, PCI, GDPR"),
+            ("Access review workflow", "owners certify or revoke with one click"),
+            ("Reports & email digests", "scheduled to inboxes; UI in Salesforce, ServiceNow or AWS"),
+        ],
+        "built_on": ["ShieldForge (Salesforce app)", "ServiceNow", "AWS", "Any cloud"],
+        "center": ("Identity", "fingerprint"),
+        "spokes": [
+            ("Users", "users"), ("Roles & profiles", "id-card"), ("Permissions", "key-round"),
+            ("Systems & apps", "server"), ("SoD rules", "scale"), ("Controls & frameworks", "clipboard-check"),
+            ("Findings", "triangle-alert"), ("Reviews & approvals", "user-check"),
+        ],
+        "sources": [
+            ("Salesforce", "Profiles, permission sets, flows", "cloud", "salesforce"),
+            ("Workday", "Security groups, roles", "users"),
+            ("ERP (SAP / Oracle)", "Roles, transaction codes", "building-2", "sap"),
+            ("ServiceNow", "ACLs, groups, roles", "workflow"),
+            ("AWS IAM / Azure Entra ID", "Cloud identities, policies", "key-round", "aws"),
+            ("GRC / ERM", "Controls, risks, owners", "clipboard-check"),
+        ],
+        "prepare": [("file-search", "Read metadata only (no records)"), ("id-card", "Normalize roles & permissions"),
+                    ("clipboard-check", "Map to control frameworks"), ("link", "Resolve people across systems")],
+        "standards": ["SOX ITGC", "HIPAA", "NIST 800-53", "PCI-DSS"],
+        "agents": ["Metadata scanner", "Access analyzer", "SoD checker", "Audit scorer", "Report & email writer"],
+        "outputs": [("Salesforce (ShieldForge)", "layout-dashboard"), ("ServiceNow / AWS console", "server"),
+                    ("Email digests", "mail")],
+        "outcomes": [("Audit score", "gauge"), ("Access issues found", "key-round"), ("SoD conflicts flagged", "scale"),
+                     ("Faster access reviews", "list-checks"), ("Audit-ready reports", "file-search"), ("Email digests", "mail")],
+        "value_headline": "Pass audits with confidence: every system's access scored, every risk owned, every report on schedule.",
+        "value_stats": [
+            ("50–70%", "less time per access review", "Pilot target"),
+            ("30–50%", "fewer excessive-access findings at the next audit", "Pilot target"),
+            ("0–100", "audit posture score per system and overall", "ShieldForge capability"),
+            ("100%", "metadata only: no patient or business records read", "Design guarantee"),
+        ],
+        "benefits": {
+            "Business": "Cleaner audits, fewer findings, less audit-prep effort",
+            "Clinical": "PHI access limited to the people who need it (HIPAA)",
+            "IT & data": "One access graph across every system, no new console",
+            "Compliance": "SOX ITGC, HIPAA, NIST, PCI and GDPR evidence on demand",
+        },
+        "talk": "ShieldForge is our own Salesforce governance product: user audit, permission risk, segregation of duties, compliance scoring and "
+                "email digests are already built. ShieldGraph takes the same idea to every system the client runs (Workday, ERP, ServiceNow, cloud) "
+                "using metadata only, and shows the findings in whatever tool they already use.",
+        "questions": [
+            "How do you run quarterly access reviews today, and how long do they take?",
+            "Which systems did your last SOX or HIPAA audit flag for access findings?",
+            "Do you know which users hold conflicting duties across Salesforce, ERP and HR?",
+        ],
+        "trigger": "SOX / HIPAA audit prep, access reviews, offboarding gaps, SoD findings, too many admins, multi-system access sprawl",
+        "who_to_talk": "CISO, CIO, Internal Audit, Compliance, Salesforce / ERP platform owners",
     },
 ]

@@ -8,7 +8,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "assets"
@@ -70,6 +70,23 @@ def logo(pdf, dest):
         out.save(dest)
 
 
+def footer_marks(pdf):
+    """The template's real footer mark: black on white (page 21) and white on black (page 22), as transparent PNGs."""
+    for page, dark, name in ((21, False, "ig_mark_black.png"), (22, True, "ig_mark_white.png")):
+        with tempfile.TemporaryDirectory() as tmp:
+            prefix = Path(tmp) / "p"
+            run(["pdftoppm", "-png", "-r", "600", "-f", str(page), "-l", str(page), "-singlefile", str(pdf), str(prefix)])
+            im = Image.open(f"{prefix}.png").convert("L")
+        w, h = im.size
+        box = (int(w * 0.025), int(h * 0.92), int(w * 0.12), int(h * 0.975))
+        crop = im.crop(box)
+        ink = crop if dark else ImageOps.invert(crop)
+        ink = ink.crop(ink.point(lambda v: 255 if v > 60 else 0).getbbox())
+        out = Image.new("RGBA", ink.size, ((255, 255, 255) if dark else (0, 0, 0)) + (0,))
+        out.putalpha(ink)
+        out.save(OUT / name)
+
+
 def main():
     pdf = Path(sys.argv[1])
     OUT.mkdir(exist_ok=True)
@@ -78,6 +95,7 @@ def main():
     for page, name in RAW_BACKGROUNDS.items():
         largest_image(pdf, page, OUT / name)
     logo(pdf, OUT / "logo_insightglobal_white.png")
+    footer_marks(pdf)
     print("assets:", sorted(p.name for p in OUT.iterdir()))
 
 

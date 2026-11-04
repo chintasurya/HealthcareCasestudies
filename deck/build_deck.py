@@ -46,7 +46,7 @@ LIGHT = RGBColor(0xF2, 0xF2, 0xF2)
 MID = RGBColor(0xE2, 0xE2, 0xE2)
 GRAY = RGBColor(0x5F, 0x5F, 0x5F)
 SOFT = RGBColor(0xBF, 0xBF, 0xBF)
-ACCENTS = {"cyan": CYAN, "magenta": MAGENTA, "yellow": YELLOW, "purple": PURPLE, "green": GREEN}
+ACCENTS = {"cyan": CYAN, "magenta": MAGENTA, "yellow": YELLOW, "purple": PURPLE, "green": GREEN, "orange": ORANGE}
 # Darker tints for icons / text on white backgrounds (contrast)
 ON_WHITE = {CYAN: "00A3C4", YELLOW: "C99A00", GREEN: "23A41A", MAGENTA: "FF0A6C", PURPLE: "5B2AA0",
             ORANGE: "E86A12", BLACK: "000000", GRAY: "5F5F5F"}
@@ -68,7 +68,7 @@ def on_white(c):
 
 def ink_on(c):
     """Icon/text color to put on top of a filled accent."""
-    return BLACK if c in (CYAN, YELLOW, GREEN) else WHITE
+    return BLACK if c in (CYAN, YELLOW, GREEN, ORANGE) else WHITE
 
 
 # ----------------------------------------------------------------------------- helpers
@@ -263,9 +263,9 @@ class Deck:
     def chrome(self, s, label=C.DECK_LABEL, dark=True, num_dark=None):
         col = WHITE if dark else BLACK
         tb(s, ML, 0.3, 12, 0.25, label, size=8, bold=True, color=col, tracking=2.2)
-        for i in range(3):  # ●●●IG footer mark
-            oval(s, ML + i * 0.135, 7.12, 0.105, fill=col)
-        tb(s, ML + 0.42, 7.065, 0.4, 0.22, "IG", size=10, bold=True, color=col)
+        # the template's real ●●●IG footer mark (extracted from the template PDF)
+        mark = ASSETS / ("ig_mark_white.png" if dark else "ig_mark_black.png")
+        s.shapes.add_picture(str(mark), Inches(0.553), Inches(7.05), Inches(0.537), Inches(0.108))
         nd = dark if num_dark is None else num_dark
         tb(s, W - 1.1, 7.07, 0.5, 0.22, str(self.n), size=9, color=WHITE if nd else BLACK, align=PP_ALIGN.RIGHT)
 
@@ -287,13 +287,13 @@ def title_slide(d):
     s = d.slide(bg="bg_title.png")
     tb(s, 1, 2.55, W - 2, 1.6, ["HEALTHCARE AI", "SOLUTION BLUEPRINTS"], size=42, light=True, color=WHITE,
        align=PP_ALIGN.CENTER, tracking=6, line=1.0)
-    tb(s, 1, 4.35, W - 2, 0.5, "Five knowledge-graph blueprints across the healthcare value chain", size=18, color=WHITE,
+    tb(s, 1, 4.35, W - 2, 0.5, "Six knowledge-graph blueprints across healthcare and enterprise governance", size=18, color=WHITE,
        align=PP_ALIGN.CENTER)
     tb(s, 1, 6.55, W - 2, 0.3, f"IGH PRESIDENT BRIEFING  ·  {C.DECK_DATE}", size=11, color=WHITE,
        align=PP_ALIGN.CENTER, tracking=4)
-    d.notes(s, "Purpose: show what our core team can do in healthcare, and give account managers and sales five clear "
-               "solution blueprints (CareGraph, TherapyGraph, RxGraph, DeviceGraph, ChainGraph) to start conversations.\n\n"
-               "Blueprints, not case studies: all five are proposed solutions at ideation stage: problem, solution, architecture and value. Figures marked 'Pilot target' are agreed "
+    d.notes(s, "Purpose: show what our core team can do in healthcare, and give account managers and sales six clear "
+               "solution blueprints (CareGraph, TherapyGraph, RxGraph, DeviceGraph, ChainGraph, ShieldGraph) to start conversations.\n\n"
+               "Blueprints, not case studies: all six are proposed solutions at ideation stage: problem, solution, architecture and value. Figures marked 'Pilot target' are agreed "
                "with each client; sourced figures are public evidence.")
 
 
@@ -304,8 +304,8 @@ def agenda_slide(d):
     items = [("Who we are", None), ("Universal architecture", None)] + \
             [(p["name"], p["domain"]) for p in C.PLATFORMS] + [("How we engage", None)]
     for i, (it, sub) in enumerate(items):
-        col, row = divmod(i, 4)
-        x, y = ML + col * 6.3, 2.0 + row * 1.0
+        col, row = divmod(i, 5)
+        x, y = ML + col * 6.3, 1.85 + row * 0.92
         oval(s, x, y, 0.5, line=WHITE, line_w=1.5)
         tb(s, x, y, 0.5, 0.5, str(i + 1), size=15, color=WHITE, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
         if sub:
@@ -313,7 +313,7 @@ def agenda_slide(d):
                  anchor=MSO_ANCHOR.MIDDLE)
         else:
             tb(s, x + 0.72, y, 5.5, 0.5, it, size=22, light=True, color=WHITE, anchor=MSO_ANCHOR.MIDDLE)
-    d.notes(s, "One universal architecture, then five solution blueprints, one per domain, each in three slides: problem and solution, "
+    d.notes(s, "One universal architecture, then six solution blueprints, one per domain, each in three slides: problem and solution, "
                "the blueprint on the universal architecture, value. "
                "We close with how we engage and a cheat sheet for sales.")
 
@@ -356,30 +356,32 @@ def who_slide(d):
 def five_graphs_slide(d):
     s = d.slide(fill=WHITE)
     d.chrome(s, dark=False)
-    tb(s, ML, 0.7, 12, 0.7, "Five blueprints across the healthcare value chain", size=32, bold=True)
+    tb(s, ML, 0.7, 12, 0.7, "Six blueprints, one architecture", size=32, bold=True)
     tb(s, ML, 1.42, 12, 0.4, "Each blueprint is built around one central entity and solves the whole set of problems in its domain.",
        size=15, color=GRAY)
-    cw, gap = 2.3, 0.155
+    gap = 0.12
+    cw = (W - 2 * ML - gap * (len(C.PLATFORMS) - 1)) / len(C.PLATFORMS)
     for i, p in enumerate(C.PLATFORMS):
         x = ML + i * (cw + gap)
         acc = ACCENTS[p["accent"]]
         rect(s, x, 2.1, cw, 4.65, fill=LIGHT)
         rect(s, x, 2.1, cw, 0.07, fill=acc)
-        oval(s, x + 0.2, 2.42, 0.85, fill=acc)
-        icon(s, p["icon"], ink_on(acc), x + 0.4, 2.62, 0.45)
-        tb(s, x + 1.15, 2.6, cw - 1.2, 0.5, f"BLUEPRINT\n{bnum(p)}".split("\n"), size=8.5, bold=True, color=GRAY, tracking=1.2, line=1.0)
-        tb(s, x + 0.2, 3.42, cw - 0.3, 0.42, p["name"], size=20, bold=True)
-        tb(s, x + 0.2, 3.84, cw - 0.3, 0.42, p["domain"].upper(), size=8.5, bold=True, color=GRAY, tracking=1.2)
-        rich(s, x + 0.2, 4.3, cw - 0.3, 0.3, [("Center: ", GRAY, False), (p["center"][0], BLACK, True)], size=11)
-        y = 4.72
+        oval(s, x + 0.18, 2.4, 0.78, fill=acc)
+        icon(s, p["icon"], ink_on(acc), x + 0.37, 2.59, 0.4)
+        tb(s, x + 1.06, 2.58, cw - 1.1, 0.5, f"BLUEPRINT\n{bnum(p)}".split("\n"), size=8, bold=True, color=GRAY, tracking=1.0, line=1.0)
+        tb(s, x + 0.18, 3.35, cw - 0.25, 0.4, p["name"], size=18, bold=True)
+        dh = text_h(p["domain"].upper(), 8, cw - 0.25, 1.1) + 0.05
+        tb(s, x + 0.18, 3.74, cw - 0.25, dh, p["domain"].upper(), size=8, bold=True, color=GRAY, tracking=1.0, line=1.0)
+        rich(s, x + 0.18, 4.22, cw - 0.25, 0.3, [("Center: ", GRAY, False), (p["center"][0], BLACK, True)], size=10.5)
+        y = 4.62
         for title, _ in p["modules"]:
-            icon(s, "circle-check", on_white(acc), x + 0.2, y + 0.02, 0.17)
-            h = text_h(title, 10.5, cw - 0.65)
-            tb(s, x + 0.45, y, cw - 0.6, h, title, size=10.5)
-            y += h + 0.07
-    d.notes(s, "The five blueprints at a glance. Pick the blueprint that matches the client in front of you: provider or payer → CareGraph; "
+            icon(s, "circle-check", on_white(acc), x + 0.18, y + 0.02, 0.16)
+            h = text_h(title, 10, cw - 0.58)
+            tb(s, x + 0.41, y, cw - 0.5, h, title, size=10)
+            y += h + 0.06
+    d.notes(s, "The six blueprints at a glance. Pick the blueprint that matches the client in front of you: provider or payer → CareGraph; "
                "pharma commercial or clinical → TherapyGraph; pharmacy, PBM or patient hub → RxGraph; MedTech or virtual care → DeviceGraph; "
-               "manufacturing, CDMO or distribution → ChainGraph.")
+               "manufacturing, CDMO or distribution → ChainGraph; any organization facing SOX / HIPAA audits or access sprawl → ShieldGraph.")
 
 
 # ----------------------------------------------------------------------------- blueprint slides
@@ -417,9 +419,9 @@ def problem_slide(d, p):
     fy = y + 3 * pitch + 0.08
     hline(s, ML, fy, ML + lw, BLACK, 0.75, dash=True)
     tb(s, ML, fy + 0.08, 2, 0.22, "EVIDENCE FROM THE FIELD", size=8, bold=True, color=GRAY, tracking=1.5)
-    bw = max(1.1, len(big) * 26 * 0.55 / 72 + 0.2)
+    bw = max(0.6, len(big) * 26 * 0.55 / 72 + 0.25)
     tb(s, ML, fy + 0.3, bw, 0.5, big, size=26, light=True, color=MAGENTA)
-    th_ = text_h(txt, 11, lw - bw - 0.1)
+    th_ = text_h(txt, 11, lw - bw - 0.1) * 1.12
     tb(s, ML + bw + 0.1, fy + 0.32, lw - bw - 0.1, th_, txt, size=11)
     tb(s, ML + bw + 0.1, fy + 0.34 + th_, lw - bw - 0.1, 0.22, "Source: " + src, size=9, italic=True, color=GRAY)
 
@@ -501,9 +503,17 @@ def arch_body(s, acc, model, sources, prepare, standards, center, spokes, crew_t
     # data foundation
     x, wdt = xs[0], widths[0]
     y = top + 0.72
-    for k, (name, desc, ic) in enumerate(sources):
+    for k, src in enumerate(sources):
+        name, desc, ic = src[:3]
+        key = src[3] if len(src) > 3 else None
         rbox(s, x + 0.12, y, wdt - 0.24, 0.55)
-        icon(s, ic, on_white(SPOKE_COLORS[k % 6]), x + 0.22, y + 0.13, 0.29)
+        if key:
+            from PIL import Image
+            wpx, hpx = Image.open(LOGOS / f"{key}.png").size
+            lh_ = min(0.29, 0.34 * hpx / wpx)
+            logo(s, key, x + 0.2, y + 0.275 - lh_ / 2, lh_)
+        else:
+            icon(s, ic, on_white(SPOKE_COLORS[k % 6]), x + 0.22, y + 0.13, 0.29)
         tb(s, x + 0.62, y + 0.05, wdt - 0.8, 0.24, name, size=9.5, bold=True)
         tb(s, x + 0.62, y + 0.27, wdt - 0.8, 0.28, desc, size=8.5, color=GRAY, line=1.0)
         y += 0.6
@@ -700,7 +710,7 @@ def cheatsheet_slide(d):
         x += wdt
     y += 0.45
     hline(s, ML, y, W - ML, BLACK, 1.5)
-    rh = 0.9
+    rh = 0.76
     for r, p in enumerate(C.PLATFORMS):
         if r % 2 == 0:
             rect(s, ML, y, W - 2 * ML, rh, fill=LIGHT)
